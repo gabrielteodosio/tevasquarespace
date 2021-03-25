@@ -3,6 +3,20 @@
   padding: 0;
 }
 
+.container.column {
+  display: flex;
+  margin: 2em 0;
+  flex-direction: column;
+
+  flex-wrap: wrap;
+  
+  align-items: center;
+  justify-content: center;
+
+  min-height: 60px;
+  padding: 20px;
+}
+
 div.container {
   display: flex;
   margin: 2em 0;
@@ -11,7 +25,7 @@ div.container {
   flex-wrap: wrap;
   
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
 }
 
 div.container div.chart-container {
@@ -34,10 +48,7 @@ div.right-inner-container div.descrition-container {
   flex-direction: column;
 
   padding: 0.5em;
-  margin: 1em 1em 0 1em;
-
-  flex-grow: 1;
-  height: 100%;
+  margin: 1em;
 }
 
 div.descrition-container p {
@@ -54,6 +65,7 @@ div.descrition-container br {
 
 #quotes-chart {
   flex: 1;
+  margin: 0 1em;
 }
 
 div.left-inner-container {
@@ -61,11 +73,11 @@ div.left-inner-container {
   flex-direction: column;
 }
 
-div.left-inner-container div.metrics-table-container {
+div.metrics-table-container {
   display: flex;
 
   padding: 0.5em;
-  margin-left: 1em;
+  margin: 0 1em;
 
   height: fit-content;
 }
@@ -79,19 +91,78 @@ div.left-inner-container div.metrics-charts-container {
   height: 100%;
 }
 
-.box {
-  border-radius: 10px;
-  border: 1px solid rgb(53,149,233);
-  
+.box-shadow {
+  border-radius: 5px;
   /* offset-x | offset-y | color */
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
 }
 
-#metrics-table {
-  width: 100%;
+.box {
+  width: 350px;
+  margin: 10px;
+  align-self: flex-start;
+  /* background-color: orange; */
+}
+
+table.vertical-table,
+table.horizontal-table {
+  flex: 1;
   line-height: 30px;
+  border-spacing: 0;
 }
 
-#metrics-table thead {
+.vertical-table thead {
+  color: #222;
+  font-size: 18px;
   text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.vertical-table tbody {
+  width: 100%;
+  /* background-color: cyan; */
+}
+
+.vertical-table tbody tr {
+  width: 100%;
+}
+
+.vertical-table tbody tr td:first-child {
+  width: 250px;
+}
+
+.vertical-table tbody tr td:not(:first-child) {
+  text-align: center;
+}
+
+.vertical-table tbody tr td {
+  padding: 8px;
+  color: #666;
+  line-height: 1.6;
+  vertical-align: middle;
+  border-bottom: 1px solid rgb(128, 128, 128);
+}
+
+.horizontal-table tr {
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.horizontal-table tr th {
+  width: 250px;
+  color: #666;
+  padding: 8px;
+  text-align: left;
+  font-weight: normal;
+  border-bottom: 1px solid rgb(128, 128, 128);
+}
+
+.horizontal-table tr td {
+  padding: 8px;
+  color: #666;
+  line-height: 1.6;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid rgb(128, 128, 128);
 }

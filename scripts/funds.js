@@ -1,7 +1,18 @@
 Plotly.setPlotConfig({ locale: "pt-BR" });
+const csvsUrls = {
+  higherRelevance:
+    "https://raw.githubusercontent.com/gabrielteodosio/tevasquarespace/master/csv/indice_debentures_alta_liquidez__50%25_de_negociacao_nos_ultimos_dois_meses_e_5mm_de_negociacao_nos_ultimos_dois_meses__precificacao_anbima_v0_94/ativos_com_maior_relevancia.csv",
+  quotes:
+    "https://raw.githubusercontent.com/gabrielteodosio/tevasquarespace/master/csv/indice_debentures_alta_liquidez__50%25_de_negociacao_nos_ultimos_dois_meses_e_5mm_de_negociacao_nos_ultimos_dois_meses__precificacao_anbima_v0_94/cotacoes.csv",
+  standardDeviation:
+    "https://raw.githubusercontent.com/gabrielteodosio/tevasquarespace/master/csv/indice_debentures_alta_liquidez__50%25_de_negociacao_nos_ultimos_dois_meses_e_5mm_de_negociacao_nos_ultimos_dois_meses__precificacao_anbima_v0_94/desvio_padrao.csv",
+  sharpeIndex:
+    "https://raw.githubusercontent.com/gabrielteodosio/tevasquarespace/master/csv/indice_debentures_alta_liquidez__50%25_de_negociacao_nos_ultimos_dois_meses_e_5mm_de_negociacao_nos_ultimos_dois_meses__precificacao_anbima_v0_94/indice_sharpe.csv",
+};
 
-const CssSpinner = Vue.component('loading-css', {
-  template: '<div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>'
+const CssSpinner = Vue.component("loading-css", {
+  template:
+    '<div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>',
 });
 
 Vue.config.devtools = true;
@@ -10,6 +21,8 @@ const app = new Vue({
   data: () => ({
     topTen: [],
     loadingMetrics: true,
+    standardDeviation: [],
+    sharpeIndex: [],
     quotesChart: {
       uuid: "quotes-chart",
       traces: [],
@@ -17,11 +30,12 @@ const app = new Vue({
         showlegend: true,
         legend: {
           orientation: "h",
-          x: 0.4, y: 1.2,
+          x: 0.4,
+          y: 1.2,
         },
         xaxis: {
           type: "date",
-          tickformat: '%d/%m/%Y',
+          tickformat: "%d/%m/%Y",
           autorange: true,
           rangeslider: {
             margintop: 50,
@@ -36,16 +50,27 @@ const app = new Vue({
           },
         },
       },
-      indexDesc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu lectus tincidunt, sodales diam in, dignissim lorem. Maecenas molestie et est at maximus. Sed non bibendum urna. Proin elementum justo massa, vel congue magna eleifend at. Curabitur accumsan nulla sit amet diam interdum accumsan. Nulla non arcu id lacus aliquet dapibus in ut massa. Aliquam fringilla sapien nunc, id lacinia enim aliquet non. Fusce pretium at nunc ac placerat.'
+      indexDesc:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu lectus tincidunt, sodales diam in, dignissim lorem. Maecenas molestie et est at maximus. Sed non bibendum urna. Proin elementum justo massa, vel congue magna eleifend at. Curabitur accumsan nulla sit amet diam interdum accumsan. Nulla non arcu id lacus aliquet dapibus in ut massa. Aliquam fringilla sapien nunc, id lacinia enim aliquet non. Fusce pretium at nunc ac placerat.",
     },
   }),
   created() {
     this.processTWHL = processTickersWithHighRelevance.bind(this);
     this.processQuotes = processQuotes.bind(this);
+    this.processStandardDeviation = processStandardDeviation.bind(this);
+    this.processSharpeIndex = processSharpeIndex.bind(this);
+
+    this.numberToPercentalDecimalsDigits = numberToPercentalDecimalsDigits.bind(
+      this
+    );
   },
   mounted() {
     this.processTWHL();
     this.processQuotes();
+    this.processStandardDeviation();
+    this.processSharpeIndex();
+
+    console.log({sharpe: this.sharpeIndex})
 
     const chartConfig = {
       displayModeBar: false,
@@ -128,14 +153,11 @@ function processTickersWithHighRelevance() {
     this.loadingMetrics = false;
   };
 
-  Plotly.d3.csv(
-    "https://raw.githubusercontent.com/gabrielteodosio/tevasquarespace/master/csv/indice_debentures_alta_liquidez__50%25_de_negociacao_nos_ultimos_dois_meses_e_5mm_de_negociacao_nos_ultimos_dois_meses__precificacao_anbima_v0_94/ativos_com_maior_relevancia.csv",
-    processFile
-  );
+  Plotly.d3.csv(csvsUrls.higherRelevance, processFile);
 }
 
 function processQuotes() {
-  const processFile = (err, rows) => {
+  const processFile = (_err, rows) => {
     const unpack = (rows, key) => rows.map((row) => row[key]);
 
     const trace = {
@@ -153,8 +175,24 @@ function processQuotes() {
     Plotly.react(uuid, traces, layout);
   };
 
-  Plotly.d3.csv(
-    "https://raw.githubusercontent.com/gabrielteodosio/tevasquarespace/master/csv/indice_debentures_alta_liquidez__50%25_de_negociacao_nos_ultimos_dois_meses_e_5mm_de_negociacao_nos_ultimos_dois_meses__precificacao_anbima_v0_94/cotacoes.csv",
-    processFile
-  );
+  Plotly.d3.csv(csvsUrls.quotes, processFile);
+}
+
+function processStandardDeviation() {
+  const processFile = (_err, rows) => (this.standardDeviation = rows);
+  Plotly.d3.csv(csvsUrls.standardDeviation, processFile);
+}
+
+function processSharpeIndex() {
+  const processFile = (_err, rows) => {
+    console.log({rows})
+    this.sharpeIndex = rows
+  };
+  Plotly.d3.csv(csvsUrls.sharpeIndex, processFile);
+}
+
+function numberToPercentalDecimalsDigits(number, digits) {
+  const numberString = ("" + number).slice(0, 12);
+  const decimalDigits = (parseFloat(numberString) * 100).toFixed(digits);
+  return ("" + decimalDigits).replaceAll(".", ",");
 }
