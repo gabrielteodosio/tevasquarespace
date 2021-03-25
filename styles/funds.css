@@ -6,6 +6,7 @@
 div.container {
   display: flex;
   margin: 2em 0;
+  flex-direction: row;
 
   flex-wrap: wrap;
   
@@ -14,21 +15,83 @@ div.container {
 }
 
 div.container div.chart-container {
-  flex: 1;
   display: flex;
   
-  padding: 10px;
-  margin: 0 20px;
+  padding: 0.5em;
+  margin: 0 1em;
   
-  height: 250px;
-  
+  height: fit-content;
+}
+
+div.right-inner-container {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+div.right-inner-container div.descrition-container {
+  display: flex;
+  flex-direction: column;
+
+  padding: 0.5em;
+  margin: 1em 1em 0 1em;
+
+  flex-grow: 1;
+  height: 100%;
+}
+
+div.descrition-container p {
+  line-height: 25px;
+}
+
+div.descrition-container h3 {
+  line-height: 30px;
+}
+
+div.descrition-container br {
+  line-height: 20px;
+}
+
+#quotes-chart {
+  flex: 1;
+}
+
+div.left-inner-container {
+  flex: 1;
+  flex-direction: column;
+}
+
+div.left-inner-container div.metrics-table-container {
+  display: flex;
+
+  padding: 0.5em;
+  margin-left: 1em;
+
+  height: fit-content;
+}
+
+div.left-inner-container div.metrics-charts-container {
+  display: flex;
+
+  padding: 0.5em;
+  margin: 1em 0 0 1em;
+
+  height: 100%;
+}
+
+.box {
   border-radius: 10px;
-  border-bottom-width: 0.4em;
-  border-bottom-style: solid;
-  border-bottom-color: rgb(53,149,233);
-  
-  background-color: rgb(238, 238, 238);
+  border: 1px solid rgb(53,149,233);
   
   /* offset-x | offset-y | color */
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+#metrics-table {
+  width: 100%;
+  line-height: 30px;
+}
+
+#metrics-table thead {
+  text-align: left;
 }
