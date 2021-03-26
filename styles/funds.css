@@ -94,7 +94,7 @@ div.left-inner-container div.metrics-charts-container {
 .box-shadow {
   border-radius: 5px;
   /* offset-x | offset-y | color */
-  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2); */
 }
 
 .box {

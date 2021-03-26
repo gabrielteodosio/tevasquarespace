@@ -27,6 +27,14 @@ const app = new Vue({
       uuid: "quotes-chart",
       traces: [],
       layout: {
+        hovermode: 'x unified',
+        hoverlabel: {
+          bgcolor: "#000",
+          font: {
+            family: "halyard-display, Arial, sans-serif",
+            color: "#fff",
+          },
+        },
         showlegend: true,
         legend: {
           orientation: "h",
@@ -35,19 +43,14 @@ const app = new Vue({
         },
         xaxis: {
           type: "date",
-          tickformat: "%d/%m/%Y",
+          showline: true,
           autorange: true,
-          rangeslider: {
-            margintop: 50,
-          },
-          title: {
-            text: "Data de referência",
-          },
+          tickformat: "%d/%m/%Y",
+          rangeslider: { margintop: 50 },
+          title: { text: "Data de referência" },
         },
         yaxis: {
-          title: {
-            text: "Valor do índice",
-          },
+          title: { text: "Valor do índice (R$)" },
         },
       },
       indexDesc:
@@ -70,11 +73,10 @@ const app = new Vue({
     this.processStandardDeviation();
     this.processSharpeIndex();
 
-    console.log({sharpe: this.sharpeIndex})
-
     const chartConfig = {
-      displayModeBar: false,
+      locale: "pt-BR",
       responsive: true,
+      displayModeBar: false,
     };
 
     const { uuid, traces, layout } = this.quotesChart;
@@ -161,12 +163,16 @@ function processQuotes() {
     const unpack = (rows, key) => rows.map((row) => row[key]);
 
     const trace = {
-      x: unpack(rows, "Data de referência"),
-      y: unpack(rows, "Valor do índice"),
-      type: "scatter",
       mode: "lines",
-      name: "Índice Debêntures DI (Idex)",
+      type: "scatter",
       line: { color: "rgb(53,149,233)" },
+      name: "Índice Debêntures DI (Idex)",
+
+      y: unpack(rows, "Valor do índice"),
+      x: unpack(rows, "Data de referência"),
+
+      showlegend: false,
+      hovertemplate: 'R$ %{y:6,.2f}',
     };
 
     this.quotesChart.traces = [trace];
@@ -184,10 +190,7 @@ function processStandardDeviation() {
 }
 
 function processSharpeIndex() {
-  const processFile = (_err, rows) => {
-    console.log({rows})
-    this.sharpeIndex = rows
-  };
+  const processFile = (_err, rows) => (this.sharpeIndex = rows);
   Plotly.d3.csv(csvsUrls.sharpeIndex, processFile);
 }
 
