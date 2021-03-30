@@ -37,6 +37,49 @@ const csvsUrls = {
   //   "https://raw.githubusercontent.com/gabrielteodosio/tevasquarespace/master/csv/indice_debentures_alta_liquidez__50%25_de_negociacao_nos_ultimos_dois_meses_e_5mm_de_negociacao_nos_ultimos_dois_meses__precificacao_anbima_v0_94/numero_de_ativos.csv",
 };
 
+const lang = {
+  months: [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
+  ],
+  weekdays: [
+    "Domingo",
+    "Seguda-feira",
+    "Terça-feira",
+    "Quarta-feira",
+    "Quinta-feira",
+    "Sexta-feira",
+    "Sábado",
+  ],
+  shortMonths: [
+    "Jan",
+    "Fev",
+    "Mar",
+    "Abr",
+    "Mai",
+    "Jun",
+    "Jul",
+    "Ago",
+    "Set",
+    "Out",
+    "Nov",
+    "Dez",
+  ],
+  shortWeekdays: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+};
+
+Highcharts.setOptions({ lang });
+
 const CssSpinner = Vue.component("loading-css", {
   template:
     '<div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>',
@@ -133,17 +176,200 @@ function processTickersWithHighRelevance() {
 
 function processQuotes() {
   const processData = (rows) => {
-    const unpack = (rows, key) => rows.map((row) => row[key]);
+    // const unpack = (rows, key) => rows.map((row) => row[key]);
+    const xAxis = "Data de referência";
+    const yAxis = "Valor do índice";
 
     const trace = {
-      line: { color: "rgb(53,149,233)" },
+      lineWidth: 1,
+      showInNavigator: true,
+      marker: { enabled: true },
       name: "Índice Debêntures DI (Idex)",
-
-      y: unpack(rows, "Valor do índice"),
-      x: unpack(rows, "Data de referência"),
+      data: rows.map((row) => [
+        new Date(row[xAxis]).getTime(),
+        parseFloat(row[yAxis]),
+      ]),
     };
 
     this.quotesChart.traces = [trace];
+
+    const quotesChart = Highcharts.stockChart("quotes-chart", {
+      chart: { type: "area" },
+      series: [trace],
+      scrollbar: { enabled: true },
+      navigator: {
+        series: [
+          Object.assign({}, trace, {
+            marker: { enabled: false },
+          }),
+        ],
+        xAxis: {
+          labels: {
+            formatter: function () {
+              return Highcharts.dateFormat("%b/%y", this.value);
+            },
+          },
+        },
+        enabled: true,
+      },
+      legend: {
+        align: "right",
+        layout: "vertical",
+        verticalAlign: "middle",
+      },
+      tooltip: {
+        // valueDecimals: 2,
+        // xDateFormat: '%d-%m-%Y',
+        formatter: function () {
+          return (
+            "<span>Data de referência: </span><b>" +
+            Highcharts.dateFormat("%d/%m/%Y", this.x) +
+            "</b>" +
+            "<br>" +
+            "<span>Cotação do índice: </span><b>" +
+            ("" + parseFloat(this.y).toFixed(2)).replace(".", ",") +
+            "</b>"
+          );
+        },
+      },
+      xAxis: {
+        type: "date",
+        // title: {
+        //   useHTML: true,
+        //   text:
+        //     '<span style="font-size: 13px;font-weight: 500;">Data de referência</span>',
+        // },
+        labels: {
+          formatter: function () {
+            return Highcharts.dateFormat("%b/%Y", this.value);
+          },
+        },
+      },
+      yAxis: {
+        opposite: false,
+        // title: {
+        //   useHTML: true,
+        //   text:
+        //     '<span style="font-size: 13px;font-weight: 500;">Cotação do índice</span>',
+        // },
+        labels: {
+          formatter: function () {
+            return ("" + this.value.toFixed(2)).replace(".", ",");
+          },
+        },
+      },
+      plotOptions: {
+        area: {
+          fillColor: {
+            linearGradient: {
+              x1: 0,
+              y1: 0,
+              x2: 0,
+              y2: 1,
+            },
+            stops: [
+              [0, Highcharts.getOptions().colors[0]],
+              [
+                1,
+                Highcharts.color(Highcharts.getOptions().colors[0])
+                  .setOpacity(0.3)
+                  .get("rgba"),
+              ],
+            ],
+          },
+        },
+      },
+      rangeSelector: {
+        allButtonsEnabled: true,
+        buttons: [
+          {
+            type: "week",
+            count: 1,
+            text: "1S",
+            title: "1 Semana",
+            dataGrouping: {
+              forced: true,
+              units: [["day", [1]]],
+            },
+          },
+          {
+            type: "month",
+            count: 1,
+            text: "1M",
+            title: "1 Mês",
+            dataGrouping: {
+              forced: true,
+              units: [["day", [1]]],
+            },
+          },
+          {
+            type: "month",
+            count: 3,
+            text: "3M",
+            title: "3 Meses",
+            dataGrouping: {
+              forced: true,
+              units: [["day", [1]]],
+            },
+          },
+          {
+            type: "year",
+            count: 1,
+            text: "1A",
+            title: "1 Ano",
+            dataGrouping: {
+              forced: true,
+              units: [["day", [1]]],
+            },
+          },
+          {
+            type: "ytd",
+            text: "YTD",
+            title: "Ínicio do Ano até Hoje",
+            dataGrouping: {
+              forced: true,
+              units: [["day", [1]]],
+            },
+          },
+          {
+            type: "all",
+            text: "MAX",
+            title: "Máximo de tempo",
+          },
+        ],
+        buttonTheme: {
+          width: 60,
+        },
+        selected: 4,
+      },
+      exporting: { enabled: false },
+      responsive: {
+        rules: [
+          {
+            condition: { maxWidth: 500 },
+            chartOptions: {
+              xAxis: {
+                labels: {
+                  formatter: function () {
+                    return lang.shortMonths[new Date(this.value).getMonth()];
+                  },
+                },
+              },
+              yAxis: {
+                labels: {
+                  align: "left",
+                  x: 0,
+                  y: -2,
+                },
+                title: {
+                  text: "",
+                },
+              },
+            },
+          },
+        ],
+      },
+    });
   };
 
   d3.csv(csvsUrls.quotes).then(processData);
@@ -175,14 +401,12 @@ function processDuration() {
 }
 
 function processModifiedDuration() {
-  const processFile = (rows) =>
-    (this.modifiedDuration = rows[rows.length - 1]);
+  const processFile = (rows) => (this.modifiedDuration = rows[rows.length - 1]);
   d3.csv(csvsUrls.modifiedDuration).then(processFile);
 }
 
 function processYieldToMaturity() {
-  const processFile = (rows) =>
-    (this.yieldToMaturity = rows[rows.length - 1]);
+  const processFile = (rows) => (this.yieldToMaturity = rows[rows.length - 1]);
   d3.csv(csvsUrls.yieldToMaturity).then(processFile);
 }
 

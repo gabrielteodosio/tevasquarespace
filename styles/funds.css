@@ -37,6 +37,10 @@ div.container div.chart-container {
   height: fit-content;
 }
 
+div.container div.chart-container div.inner {
+  flex-basis: 100%;
+}
+
 div.right-inner-container {
   flex: 3;
   display: flex;
