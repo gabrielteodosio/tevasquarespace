@@ -1,3 +1,8 @@
+const colors = {
+  primary: "rgb(53,149,233)",
+  white: "rgb(255,255,255)",
+}
+
 const csvsUrls = {
   higherRelevance:
     "https://raw.githubusercontent.com/gabrielteodosio/tevasquarespace/master/csv/indice_debentures_alta_liquidez__50%25_de_negociacao_nos_ultimos_dois_meses_e_5mm_de_negociacao_nos_ultimos_dois_meses__precificacao_anbima_v0_94/ativos_com_maior_relevancia.csv",
@@ -100,6 +105,12 @@ const app = new Vue({
     anualReturn: [],
     loadingMetrics: true,
     standardDeviation: [],
+    periodicsReturn: [],
+    dueDateExposition: [],
+    monthlyReturn: {
+      years: [],
+      filteredByMonths: [],
+    },
     anualReturn: [],
     sharpeIndex: [],
     indexExposition: [],
@@ -124,6 +135,9 @@ const app = new Vue({
     this.processIndexExposition = processIndexExposition.bind(this);
     this.processTicksNumber = processTicksNumber.bind(this);
     this.processRepactuationMedia = processRepactuationMedia.bind(this);
+    this.processPeriodicsReturn = processPeriodicsReturn.bind(this);
+    this.processDueDateExposition = processDueDateExposition.bind(this);
+    this.processMonthlyReturn = processMonthlyReturn.bind(this);
 
     this.numberToPercentalDecimalsDigits = numberToPercentalDecimalsDigits.bind(this);
     this.numberToDecimalsDigits = numberToDecimalsDigits.bind(this);
@@ -142,6 +156,9 @@ const app = new Vue({
     this.processIndexExposition();
     this.processTicksNumber();
     this.processRepactuationMedia();
+    this.processPeriodicsReturn();
+    this.processDueDateExposition();
+    this.processMonthlyReturn();
   },
 });
 
@@ -169,6 +186,40 @@ function processTickersWithHighRelevance() {
     const topTen = filteredData.slice(0, 10);
     this.topTen = topTen;
     this.loadingMetrics = false;
+
+    const trace = {
+      name: "Ativos com Maior Relevância (%)",
+      color: Highcharts.color(colors.primary).get("rgb"),
+      data: topTen.map((d) => [
+        d["Ativo"],
+        parseFloat(d["Peso teórico"]),
+      ]),
+    };
+
+    const topTenChart = Highcharts.chart('top-ten-chart', {
+      chart: {
+        type: "bar",
+        height: 490,
+      },
+      series: [trace],
+      exporting: { enabled: false },
+      legend: {
+        align: "left",
+        layout: "horizontal",
+        verticalAlign: "top",
+      },
+      tooltip: { enabled: false },
+      xAxis: { visible: false },
+      yAxis: { visible: false },
+      title: { text: "" },
+      plotOptions: {
+        series: {
+          groupPadding: 0,
+          pointPadding: 0.25,
+          borderWidth: 0
+        }
+      },
+    });
   };
 
   d3.csv(csvsUrls.higherRelevance).then(processFile);
@@ -183,7 +234,10 @@ function processQuotes() {
     const trace = {
       lineWidth: 1,
       showInNavigator: true,
-      marker: { enabled: true },
+      marker: {
+        enabled: true,
+        fillColor: Highcharts.color(colors.primary).get("rgba"),
+      },
       name: "Índice Debêntures DI (Idex)",
       data: rows.map((row) => [
         new Date(row[xAxis]).getTime(),
@@ -197,6 +251,7 @@ function processQuotes() {
       chart: { type: "area" },
       series: [trace],
       scrollbar: { enabled: true },
+      exporting: { enabled: false },
       navigator: {
         series: [
           Object.assign({}, trace, {
@@ -260,6 +315,7 @@ function processQuotes() {
       },
       plotOptions: {
         area: {
+          lineColor: Highcharts.color(colors.primary).get("rgba"),
           fillColor: {
             linearGradient: {
               x1: 0,
@@ -268,7 +324,7 @@ function processQuotes() {
               y2: 1,
             },
             stops: [
-              [0, Highcharts.getOptions().colors[0]],
+              [0, Highcharts.color(colors.primary).get("rgba")],
               [
                 1,
                 Highcharts.color(Highcharts.getOptions().colors[0])
@@ -340,9 +396,8 @@ function processQuotes() {
         buttonTheme: {
           width: 60,
         },
-        selected: 4,
+        selected: 5,
       },
-      exporting: { enabled: false },
       responsive: {
         rules: [
           {
@@ -455,6 +510,55 @@ function processRepactuationMedia() {
   d3.csv(csvsUrls.repactuationMedia).then(processFile);
 }
 
+function processPeriodicsReturn() {
+  const processFile = (rows) => (this.periodicsReturn = rows);
+  d3.csv(csvsUrls.periodicsReturn).then(processFile);
+}
+
+function processDueDateExposition() {
+  const processFile = (rows) => {
+    const sortedData = multiSort(rows, { "Data de referência": "desc" });
+    const highestDate = sortedData[0]["Data de referência"];
+    const filteredData = sortedData.filter(
+      (data) => data["Data de referência"] === highestDate
+    )
+
+    this.dueDateExposition = filteredData;
+  };
+  d3.csv(csvsUrls.dueDateExposition).then(processFile);
+}
+
+function processMonthlyReturn() {
+  const processFile = (rows) => {
+    const years = Array.from(
+      new Set(
+        rows.map((data) => new Date(Object.values(data)[0]).getFullYear())
+      )
+    ).sort(desc);
+    
+    let filteredByMonths = years.reduce((acc, cur, idx, src) => {
+      let dataByMonth = rows
+        .filter(
+          (data) => new Date(data["Mês/ano do retorno"]).getFullYear() == cur
+        )
+        .map((data) => data["Retorno"]);
+
+        if (dataByMonth.length < 12) {
+          const aux = new Array(12).fill("-")
+            .map((_, i) => dataByMonth[i] ? dataByMonth[i] : '-')
+          
+            dataByMonth = aux
+        }
+
+      return { ...acc, [cur]: dataByMonth };
+    }, {});
+
+    this.monthlyReturn.years = years
+    this.monthlyReturn.filteredByMonths = filteredByMonths
+  };
+  d3.csv(csvsUrls.monthlyReturn).then(processFile);
+}
+
 // utlity functions
 
 function numberToPercentalDecimalsDigits(number, digits) {
@@ -524,3 +628,18 @@ function multiSort(array, sortObject = {}) {
     return sorted;
   });
 }
+
+function asc(a, b, column) {
+  if (column && a[column] && b[column]) {
+    return a[column] < b[column] ? -1 : (a[column] > b[column] ? 1 : 0);
+  }
+  return a < b ? -1 : (a > b ? 1 : 0);
+}
+
+function desc(a, b, column) {
+  if (column && a[column] && b[column]) {
+    return a[column] < b[column] ? 1 : (a[column] > b[column] ? -1 : 0);
+  }
+  return a < b ? 1 : (a > b ? -1 : 0);
+}
+

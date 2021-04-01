@@ -9,7 +9,7 @@
   flex-direction: column;
 
   flex-wrap: wrap;
-  
+
   align-items: center;
   justify-content: center;
 
@@ -23,17 +23,17 @@ div.container {
   flex-direction: row;
 
   flex-wrap: wrap;
-  
+
   align-items: center;
   justify-content: space-around;
 }
 
 div.container div.chart-container {
   display: flex;
-  
+
   padding: 0.5em;
   margin: 0 1em;
-  
+
   height: fit-content;
 }
 
@@ -104,8 +104,16 @@ div.left-inner-container div.metrics-charts-container {
 .box {
   width: 350px;
   margin: 10px;
+  display: flex;
+  flex-direction: column;
   align-self: flex-start;
+  align-items: center;
   /* background-color: orange; */
+}
+
+table tr:hover {
+  cursor: default;
+  background-color: rgba(53, 149, 233, 0.3);
 }
 
 table.vertical-table,
@@ -121,11 +129,26 @@ table.horizontal-table {
   text-align: left;
   text-transform: uppercase;
   white-space: nowrap;
+  /* background-color: red; */
+}
+
+.vertical-table thead th {
+  font-weight: normal;
+  padding: 8px;
+
+  border-bottom: 1px solid rgb(128, 128, 128);
+}
+
+.vertical-table thead th:not(:first-child) {
+  text-align: center;
+}
+
+.vertical-table thead tr:hover {
+  background-color: transparent;
 }
 
 .vertical-table tbody {
   width: 100%;
-  /* background-color: cyan; */
 }
 
 .vertical-table tbody tr {
@@ -148,9 +171,23 @@ table.horizontal-table {
   border-bottom: 1px solid rgb(128, 128, 128);
 }
 
+.vertical-table tbody tr td.row-title {
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
 .horizontal-table tr {
   width: 100%;
   text-transform: uppercase;
+}
+
+.horizontal-table tr.inverted-color {
+  background-color: #222;
+}
+
+.horizontal-table tr.inverted-color th {
+  color: white;
+  text-transform: capitalize;
 }
 
 .horizontal-table tr th {
@@ -162,6 +199,10 @@ table.horizontal-table {
   border-bottom: 1px solid rgb(128, 128, 128);
 }
 
+.horizontal-table tr th.center-text {
+  text-align: center;
+}
+
 .horizontal-table tr td {
   padding: 8px;
   color: #666;
@@ -169,4 +210,20 @@ table.horizontal-table {
   text-align: center;
   vertical-align: middle;
   border-bottom: 1px solid rgb(128, 128, 128);
+}
+
+.join {
+  justify-content: center !important;
+}
+
+.join div {
+  margin: auto 0;
+}
+
+.join > .box {
+  width: fit-content;
+}
+
+.join .box.horizontal {
+  margin-top: 35px;
 }
