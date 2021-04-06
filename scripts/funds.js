@@ -1,7 +1,7 @@
 const colors = {
   primary: "rgb(53,149,233)",
   white: "rgb(255,255,255)",
-}
+};
 
 const csvsUrls = {
   higherRelevance:
@@ -139,7 +139,9 @@ const app = new Vue({
     this.processDueDateExposition = processDueDateExposition.bind(this);
     this.processMonthlyReturn = processMonthlyReturn.bind(this);
 
-    this.numberToPercentalDecimalsDigits = numberToPercentalDecimalsDigits.bind(this);
+    this.numberToPercentalDecimalsDigits = numberToPercentalDecimalsDigits.bind(
+      this
+    );
     this.numberToDecimalsDigits = numberToDecimalsDigits.bind(this);
   },
   mounted() {
@@ -189,25 +191,18 @@ function processTickersWithHighRelevance() {
 
     const trace = {
       name: "Ativos com Maior Relevância (%)",
-      color: Highcharts.color(colors.primary).get("rgb"),
-      data: topTen.map((d) => [
-        d["Ativo"],
-        parseFloat(d["Peso teórico"]),
-      ]),
+      color: Highcharts.color(colors.primary).get("rgba"),
+      data: topTen.map((d) => [d["Ativo"], parseFloat(d["Peso teórico"])]),
     };
 
-    const topTenChart = Highcharts.chart('top-ten-chart', {
+    const topTenChart = Highcharts.chart("top-ten-chart", {
       chart: {
         type: "bar",
-        height: 490,
+        height: 500,
       },
       series: [trace],
       exporting: { enabled: false },
-      legend: {
-        align: "left",
-        layout: "horizontal",
-        verticalAlign: "top",
-      },
+      legend: { enabled: false },
       tooltip: { enabled: false },
       xAxis: { visible: false },
       yAxis: { visible: false },
@@ -215,9 +210,9 @@ function processTickersWithHighRelevance() {
       plotOptions: {
         series: {
           groupPadding: 0,
-          pointPadding: 0.25,
-          borderWidth: 0
-        }
+          pointPadding: 0.26,
+          borderWidth: 0,
+        },
       },
     });
   };
@@ -248,7 +243,10 @@ function processQuotes() {
     this.quotesChart.traces = [trace];
 
     const quotesChart = Highcharts.stockChart("quotes-chart", {
-      chart: { type: "area" },
+      chart: {
+        type: "area",
+        margin: 0,
+      },
       series: [trace],
       scrollbar: { enabled: true },
       exporting: { enabled: false },
@@ -466,7 +464,7 @@ function processYieldToMaturity() {
 }
 
 function processAnualReturn() {
-  const processFile = (rows) => (this.anualReturn = rows);
+  const processFile = (rows) => (this.anualReturn = rows.sort((a,b) => desc(a, b, "Ano do retorno")));
   d3.csv(csvsUrls.anualReturn).then(processFile);
 }
 
@@ -517,13 +515,39 @@ function processPeriodicsReturn() {
 
 function processDueDateExposition() {
   const processFile = (rows) => {
-    const sortedData = multiSort(rows, { "Data de referência": "desc" });
-    const highestDate = sortedData[0]["Data de referência"];
-    const filteredData = sortedData.filter(
+    const highestDate = rows[rows.length - 1]["Data de referência"];
+    const filteredData = rows.filter(
       (data) => data["Data de referência"] === highestDate
-    )
+    );
 
     this.dueDateExposition = filteredData;
+
+    const trace = {
+      name: "Brands",
+      colorByPoint: true,
+      data: filteredData.map((data) => ({
+        name: data["Prazo de vencimento"],
+        y: parseFloat(data['Exposição']),
+      })),
+      innerSize: '55%',
+    };
+
+    const topTenChart = Highcharts.chart("due-date-chart", {
+      chart: { type: "pie" },
+      series: [trace],
+      exporting: { enabled: false },
+      title: { text: "" },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: "pointer",
+          dataLabels: {
+            enabled: true,
+            format: "<b>{point.name}</b>: {point.percentage:.1f} %",
+          },
+        },
+      },
+    });
   };
   d3.csv(csvsUrls.dueDateExposition).then(processFile);
 }
@@ -535,7 +559,7 @@ function processMonthlyReturn() {
         rows.map((data) => new Date(Object.values(data)[0]).getFullYear())
       )
     ).sort(desc);
-    
+
     let filteredByMonths = years.reduce((acc, cur, idx, src) => {
       let dataByMonth = rows
         .filter(
@@ -543,18 +567,19 @@ function processMonthlyReturn() {
         )
         .map((data) => data["Retorno"]);
 
-        if (dataByMonth.length < 12) {
-          const aux = new Array(12).fill("-")
-            .map((_, i) => dataByMonth[i] ? dataByMonth[i] : '-')
-          
-            dataByMonth = aux
-        }
+      if (dataByMonth.length < 12) {
+        const aux = new Array(12)
+          .fill("-")
+          .map((_, i) => (dataByMonth[i] ? dataByMonth[i] : "-"));
+
+        dataByMonth = aux;
+      }
 
       return { ...acc, [cur]: dataByMonth };
     }, {});
 
-    this.monthlyReturn.years = years
-    this.monthlyReturn.filteredByMonths = filteredByMonths
+    this.monthlyReturn.years = years;
+    this.monthlyReturn.filteredByMonths = filteredByMonths;
   };
   d3.csv(csvsUrls.monthlyReturn).then(processFile);
 }
@@ -562,15 +587,23 @@ function processMonthlyReturn() {
 // utlity functions
 
 function numberToPercentalDecimalsDigits(number, digits) {
-  const numberString = ("" + number).slice(0, 12);
-  const decimalDigits = (parseFloat(numberString) * 100).toFixed(digits);
-  return ("" + decimalDigits).replaceAll(".", ",");
+  const decimalDigits = parseFloat(number) * 100;
+  const decimalDigitsString = "" + decimalDigits;
+  const commaIndex = decimalDigitsString.indexOf(".")
+  if (digits == 0) {
+    return decimalDigitsString.slice(0, commaIndex - 1);
+  }
+  return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
 
 function numberToDecimalsDigits(number, digits) {
-  const numberString = ("" + number).slice(0, 12);
-  const decimalDigits = parseFloat(numberString).toFixed(digits);
-  return ("" + decimalDigits).replaceAll(".", ",");
+  const decimalDigits = parseFloat(number);
+  const decimalDigitsString = "" + decimalDigits;
+  const commaIndex = decimalDigitsString.indexOf(".")
+  if (digits == 0) {
+    return decimalDigitsString.slice(0, commaIndex - 1);
+  }
+  return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
 
 /**
@@ -631,15 +664,14 @@ function multiSort(array, sortObject = {}) {
 
 function asc(a, b, column) {
   if (column && a[column] && b[column]) {
-    return a[column] < b[column] ? -1 : (a[column] > b[column] ? 1 : 0);
+    return a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
   }
-  return a < b ? -1 : (a > b ? 1 : 0);
+  return a < b ? -1 : a > b ? 1 : 0;
 }
 
 function desc(a, b, column) {
   if (column && a[column] && b[column]) {
-    return a[column] < b[column] ? 1 : (a[column] > b[column] ? -1 : 0);
+    return a[column] < b[column] ? 1 : a[column] > b[column] ? -1 : 0;
   }
-  return a < b ? 1 : (a > b ? -1 : 0);
+  return a < b ? 1 : a > b ? -1 : 0;
 }
-

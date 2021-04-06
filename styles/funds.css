@@ -69,7 +69,7 @@ div.descrition-container br {
 
 #quotes-chart {
   flex: 1;
-  margin: 0 1em;
+  margin: 0;
 }
 
 div.left-inner-container {
@@ -121,6 +121,11 @@ table.horizontal-table {
   flex: 1;
   line-height: 30px;
   border-spacing: 0;
+}
+
+table.vertical-table.same-width,
+table.horizontal-table.same-width {
+  width: 500px;
 }
 
 .vertical-table thead {
@@ -181,13 +186,24 @@ table.horizontal-table {
   text-transform: uppercase;
 }
 
-.horizontal-table tr.inverted-color {
+.horizontal-table tr.inverted-color,
+.vertical-table tr.inverted-color {
   background-color: #222;
 }
 
-.horizontal-table tr.inverted-color th {
-  color: white;
-  text-transform: capitalize;
+.horizontal-table tr.inverted-color:hover,
+.vertical-table tr.inverted-color:hover {
+  background-color: #222;
+}
+
+.horizontal-table tr.inverted-color th,
+.vertical-table tr.inverted-color th {
+  color: whitesmoke;
+}
+
+td.inverted-color {
+  background-color: #222;
+  color: whitesmoke !important;
 }
 
 .horizontal-table tr th {
@@ -225,5 +241,8 @@ table.horizontal-table {
 }
 
 .join .box.horizontal {
-  margin-top: 35px;
+  margin-top: 76px;
+}
+
+div#top-ten-chart {
 }
