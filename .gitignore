@@ -1,2 +1,3 @@
-/src
+/src/**/dev
+/src/**/prod
 TODO.md

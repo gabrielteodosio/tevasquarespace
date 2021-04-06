@@ -118,7 +118,7 @@ const app = new Vue({
       uuid: "quotes-chart",
       traces: [],
       indexDesc:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus eu lectus tincidunt, sodales diam in, dignissim lorem. Maecenas molestie et est at maximus. Sed non bibendum urna. Proin elementum justo massa, vel congue magna eleifend at. Curabitur accumsan nulla sit amet diam interdum accumsan. Nulla non arcu id lacus aliquet dapibus in ut massa. Aliquam fringilla sapien nunc, id lacinia enim aliquet non. Fusce pretium at nunc ac placerat.",
+        "O Índice de Debêntures ANBIMA, conhecido como IDA, espelha o comportamento de uma carteira de dívida privada, mais especificamente das debêntures. Ele é um termômetro do desempenho desses produtos para os investidores. É composto pelas debêntures que fazem parte da nossa precificação diária, desde que cumpram alguns critérios de seleção, por exemplo, são admitidas apenas séries com prazo superior a um mês. O índice que reflete a totalidade das debêntures precificadas é chamado de IDA-Geral. Para espelhar os diferentes tipos de papéis disponíveis no mercado, o IDA conta com alguns subíndices, como veremos a seguir.",
     },
   }),
   created() {
@@ -139,9 +139,7 @@ const app = new Vue({
     this.processDueDateExposition = processDueDateExposition.bind(this);
     this.processMonthlyReturn = processMonthlyReturn.bind(this);
 
-    this.numberToPercentalDecimalsDigits = numberToPercentalDecimalsDigits.bind(
-      this
-    );
+    this.numberToPercentalDecimalsDigits = numberToPercentalDecimalsDigits.bind(this);
     this.numberToDecimalsDigits = numberToDecimalsDigits.bind(this);
   },
   mounted() {
@@ -524,12 +522,12 @@ function processDueDateExposition() {
 
     const trace = {
       name: "Brands",
+      innerSize: '55%',
       colorByPoint: true,
       data: filteredData.map((data) => ({
         name: data["Prazo de vencimento"],
         y: parseFloat(data['Exposição']),
       })),
-      innerSize: '55%',
     };
 
     const topTenChart = Highcharts.chart("due-date-chart", {
@@ -539,12 +537,21 @@ function processDueDateExposition() {
       title: { text: "" },
       plotOptions: {
         pie: {
-          allowPointSelect: true,
           cursor: "pointer",
-          dataLabels: {
-            enabled: true,
-            format: "<b>{point.name}</b>: {point.percentage:.1f} %",
-          },
+          showInLegend: true,
+          allowPointSelect: false,
+          dataLabels: { enabled: false },
+        },
+      },
+      tooltip: {
+        formatter: function () {
+          return (
+            "<b>" + this.key + "</b>" +
+            "<br>" +
+            "<span>Exposição: </span><b>" +
+            numberToPercentalDecimalsDigits(this.y, 2) +
+            "% </b>"
+          );
         },
       },
     });
