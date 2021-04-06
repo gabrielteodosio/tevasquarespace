@@ -215,6 +215,11 @@ td.inverted-color {
   border-bottom: 1px solid rgb(128, 128, 128);
 }
 
+.horizontal-table tr th.inverted-color {
+  background-color: #222 !important;
+  color: whitesmoke;
+}
+
 .horizontal-table tr th.center-text {
   text-align: center;
 }
