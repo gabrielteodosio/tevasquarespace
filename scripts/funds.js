@@ -118,7 +118,7 @@ const app = new Vue({
       uuid: "quotes-chart",
       traces: [],
       indexDesc:
-        "O Índice de Debêntures ANBIMA, conhecido como IDA, espelha o comportamento de uma carteira de dívida privada, mais especificamente das debêntures. Ele é um termômetro do desempenho desses produtos para os investidores. É composto pelas debêntures que fazem parte da nossa precificação diária, desde que cumpram alguns critérios de seleção, por exemplo, são admitidas apenas séries com prazo superior a um mês. O índice que reflete a totalidade das debêntures precificadas é chamado de IDA-Geral. Para espelhar os diferentes tipos de papéis disponíveis no mercado, o IDA conta com alguns subíndices, como veremos a seguir.",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pharetra velit in odio posuere, nec venenatis mi varius. Nullam nec sem sollicitudin, gravida leo in, porttitor est. Interdum et malesuada fames ac ante ipsum primis in faucibus. In rhoncus aliquet ligula non tristique. Sed luctus ornare erat tempus elementum. Curabitur sed nibh ut dolor commodo aliquam. Duis bibendum augue urna, in maximus ligula dapibus eget. Sed eu nunc sit amet nisl blandit pellentesque. Suspendisse sit amet nunc leo. Aliquam molestie enim odio, a sollicitudin velit tristique quis. Nunc auctor tellus eget dui dictum, faucibus bibendum tellus efficitur. Sed volutpat nisl ac est cursus ultrices. Sed eget nunc sed dolor bibendum vehicula. Curabitur volutpat sodales ornare. Nam dictum malesuada erat, quis pellentesque magna feugiat sit amet.",
     },
   }),
   created() {
@@ -141,6 +141,7 @@ const app = new Vue({
 
     this.numberToPercentalDecimalsDigits = numberToPercentalDecimalsDigits.bind(this);
     this.numberToDecimalsDigits = numberToDecimalsDigits.bind(this);
+    this.findYearReturnIndex = findYearReturnIndex.bind(this)
   },
   mounted() {
     this.processQuotes();
@@ -224,6 +225,8 @@ function processQuotes() {
     const xAxis = "Data de referência";
     const yAxis = "Valor do índice";
 
+    let lowestIndex = Number.MAX_VALUE;
+
     const trace = {
       lineWidth: 1,
       showInNavigator: true,
@@ -231,11 +234,17 @@ function processQuotes() {
         enabled: true,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
-      name: "Índice Debêntures DI (Idex)",
-      data: rows.map((row) => [
-        new Date(row[xAxis]).getTime(),
-        parseFloat(row[yAxis]),
-      ]),
+      name: "Índice Debêntures DI",
+      data: rows.map((row) => {
+        if (lowestIndex > parseFloat(row[yAxis])) {
+          lowestIndex = parseFloat(row[yAxis]);
+        }
+        
+        return [
+          new Date(row[xAxis]).getTime(),
+          parseFloat(row[yAxis]),
+        ];
+      }),
     };
 
     this.quotesChart.traces = [trace];
@@ -243,7 +252,7 @@ function processQuotes() {
     const quotesChart = Highcharts.stockChart("quotes-chart", {
       chart: {
         type: "area",
-        margin: 0,
+        margin: [30, 0, 30, 0],
       },
       series: [trace],
       scrollbar: { enabled: true },
@@ -264,13 +273,12 @@ function processQuotes() {
         enabled: true,
       },
       legend: {
-        align: "right",
+        enabled: true,
+        align: "center",
         layout: "vertical",
-        verticalAlign: "middle",
+        verticalAlign: "top",
       },
       tooltip: {
-        // valueDecimals: 2,
-        // xDateFormat: '%d-%m-%Y',
         formatter: function () {
           return (
             "<span>Data de referência: </span><b>" +
@@ -285,11 +293,6 @@ function processQuotes() {
       },
       xAxis: {
         type: "date",
-        // title: {
-        //   useHTML: true,
-        //   text:
-        //     '<span style="font-size: 13px;font-weight: 500;">Data de referência</span>',
-        // },
         labels: {
           formatter: function () {
             return Highcharts.dateFormat("%b/%Y", this.value);
@@ -298,16 +301,12 @@ function processQuotes() {
       },
       yAxis: {
         opposite: false,
-        // title: {
-        //   useHTML: true,
-        //   text:
-        //     '<span style="font-size: 13px;font-weight: 500;">Cotação do índice</span>',
-        // },
         labels: {
           formatter: function () {
             return ("" + this.value.toFixed(2)).replace(".", ",");
           },
         },
+        min: lowestIndex / 2,
       },
       plotOptions: {
         area: {
@@ -531,10 +530,15 @@ function processDueDateExposition() {
     };
 
     const topTenChart = Highcharts.chart("due-date-chart", {
-      chart: { type: "pie" },
+      chart: { type: "pie", marginBottom: 50 },
       series: [trace],
       exporting: { enabled: false },
       title: { text: "" },
+      legend: {
+        align: "right",
+        layout: "vertical",
+        verticalAlign: "middle",
+      },
       plotOptions: {
         pie: {
           cursor: "pointer",
@@ -567,7 +571,7 @@ function processMonthlyReturn() {
       )
     ).sort(desc);
 
-    let filteredByMonths = years.reduce((acc, cur, idx, src) => {
+    let filteredByMonths = years.reduce((acc, cur) => {
       let dataByMonth = rows
         .filter(
           (data) => new Date(data["Mês/ano do retorno"]).getFullYear() == cur
@@ -681,4 +685,17 @@ function desc(a, b, column) {
     return a[column] < b[column] ? 1 : a[column] > b[column] ? -1 : 0;
   }
   return a < b ? 1 : a > b ? -1 : 0;
+}
+
+function findYearReturnIndex(year) {
+  for (let idx = 0; idx < this.anualReturn.length; idx++) {
+    const ret = this.anualReturn[idx];
+    const yr = parseInt(ret["Ano do retorno"]);
+    
+    if (yr === year) {
+      return idx;
+    }
+  }
+  
+  return false;
 }

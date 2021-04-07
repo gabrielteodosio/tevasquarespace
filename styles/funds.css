@@ -97,17 +97,15 @@ div.left-inner-container div.metrics-charts-container {
 
 .box-shadow {
   border-radius: 5px;
-  /* offset-x | offset-y | color */
+  /* offset-x | offset-y | blur | color */
   /* box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2); */
 }
 
 .box {
-  width: 350px;
+  width: 58%;
   margin: 10px;
   display: flex;
   flex-direction: column;
-  align-self: flex-start;
-  align-items: center;
   /* background-color: orange; */
 }
 
@@ -179,6 +177,10 @@ table.horizontal-table.same-width {
 .vertical-table tbody tr td.row-title {
   white-space: nowrap;
   text-transform: uppercase;
+}
+
+.inner .horizontal-table {
+  margin-top: 30px;
 }
 
 .horizontal-table tr {
