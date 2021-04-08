@@ -1,0 +1,40 @@
+
+div.index-list-container {
+  display: flex;
+  flex-direction: column;
+}
+
+div.index-container {
+  display: flex;
+  padding: 0 20px;
+  cursor: pointer;
+  flex-wrap: nowrap;
+  align-items: center;
+  border-bottom: 1px solid rgb(128, 128, 128);
+}
+
+
+div.index-container:hover {
+  background-color: rgba(53, 149, 233, 0.3);
+}
+
+div.index-title-container {
+  display: flex;
+  flex-grow: 1;
+  white-space: pre-wrap;
+}
+
+h3.index-title {
+  font-weight: normal;
+  line-height: 20px;
+}
+
+div.index-icon-container {
+  /* background-color: orangered; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  min-width: 30px;
+  min-height: 30px;
+}
