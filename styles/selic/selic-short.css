@@ -1,0 +1,255 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.container.column {
+  display: flex;
+  margin: 2em 0;
+  flex-direction: column;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 60px;
+  padding: 20px;
+}
+
+div.container {
+  display: flex;
+  margin: 2em 0;
+  flex-direction: row;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+  justify-content: space-around;
+}
+
+div.container div.chart-container {
+  display: flex;
+
+  padding: 0.5em;
+  margin: 0 1em;
+
+  height: fit-content;
+}
+
+div.container div.chart-container div.inner {
+  flex-basis: 100%;
+}
+
+div.right-inner-container {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+div.right-inner-container div.descrition-container {
+  display: flex;
+  flex-direction: column;
+
+  padding: 0.5em;
+  margin: 1em;
+}
+
+div.descrition-container p {
+  line-height: 25px;
+}
+
+div.descrition-container h3 {
+  line-height: 30px;
+}
+
+div.descrition-container br {
+  line-height: 20px;
+}
+
+#quotes-chart {
+  flex: 1;
+  margin: 0;
+}
+
+div.left-inner-container {
+  flex: 1;
+  flex-direction: column;
+}
+
+div.metrics-table-container {
+  display: flex;
+
+  padding: 0.5em;
+  margin: 0 1em;
+
+  height: fit-content;
+}
+
+div.left-inner-container div.metrics-charts-container {
+  display: flex;
+
+  padding: 0.5em;
+  margin: 1em 0 0 1em;
+
+  height: 100%;
+}
+
+.box-shadow {
+  border-radius: 5px;
+  /* offset-x | offset-y | blur | color */
+  /* box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.2); */
+}
+
+.box {
+  width: 82%;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  /* background-color: orange; */
+}
+
+table tr:hover {
+  cursor: default;
+  background-color: rgba(53, 149, 233, 0.3);
+}
+
+table.vertical-table,
+table.horizontal-table {
+  flex: 1;
+  line-height: 30px;
+  border-spacing: 0;
+}
+
+table.vertical-table.same-width,
+table.horizontal-table.same-width {
+  width: 500px;
+}
+
+.vertical-table thead {
+  color: #222;
+  font-size: 18px;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  /* background-color: red; */
+}
+
+.vertical-table thead th {
+  font-weight: normal;
+  padding: 8px;
+
+  border-bottom: 1px solid rgb(128, 128, 128);
+}
+
+.vertical-table thead th:not(:first-child) {
+  text-align: center;
+}
+
+.vertical-table thead tr:hover {
+  background-color: transparent;
+}
+
+.vertical-table tbody {
+  width: 100%;
+}
+
+.vertical-table tbody tr {
+  width: 100%;
+}
+
+.vertical-table tbody tr td:first-child {
+  width: 250px;
+}
+
+.vertical-table tbody tr td:not(:first-child) {
+  text-align: center;
+}
+
+.vertical-table tbody tr td {
+  padding: 8px;
+  color: #666;
+  line-height: 1.6;
+  vertical-align: middle;
+  border-bottom: 1px solid rgb(128, 128, 128);
+}
+
+.vertical-table tbody tr td.row-title {
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.inner .horizontal-table {
+  margin-top: 30px;
+}
+
+.horizontal-table tr {
+  width: 100%;
+  text-transform: uppercase;
+}
+
+.horizontal-table tr.inverted-color,
+.vertical-table tr.inverted-color {
+  background-color: #222;
+}
+
+.horizontal-table tr.inverted-color:hover,
+.vertical-table tr.inverted-color:hover {
+  background-color: #222;
+}
+
+.horizontal-table tr.inverted-color th,
+.vertical-table tr.inverted-color th {
+  color: whitesmoke;
+}
+
+td.inverted-color {
+  background-color: #222;
+  color: whitesmoke !important;
+}
+
+.horizontal-table tr th {
+  width: 250px;
+  color: #666;
+  padding: 8px;
+  text-align: left;
+  font-weight: normal;
+  border-bottom: 1px solid rgb(128, 128, 128);
+}
+
+.horizontal-table tr th.inverted-color {
+  background-color: #222 !important;
+  color: whitesmoke;
+}
+
+.horizontal-table tr th.center-text {
+  text-align: center;
+}
+
+.horizontal-table tr td {
+  padding: 8px;
+  color: #666;
+  line-height: 1.6;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid rgb(128, 128, 128);
+}
+
+.join {
+  justify-content: center !important;
+}
+
+.join div {
+  margin: auto 0;
+}
+
+.join > .box {
+  width: fit-content;
+}
+
+.join .box.horizontal {
+  margin-top: 96px;
+}
+
+div#top-ten-chart {
+}
