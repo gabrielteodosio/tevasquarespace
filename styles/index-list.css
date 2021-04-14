@@ -56,7 +56,6 @@
 }
 
 .index-icon-container {
-  /* background-color: orangered; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,7 +91,7 @@
   box-sizing: border-box;
   background: transparent;
   border: 0px solid transparent;
-  border-radius: var(--size-radius);
+  border-bottom: 2px solid var(--color-dark);
   padding: calc(var(--size-bezel) * 1.5) var(--size-bezel);
 }
 
@@ -107,5 +106,4 @@
 .input__field:focus + .input__label,
 .input__field:not(:placeholder-shown) + .input__label {
   transform: translate(0.25rem, -85%) scale(0.8);
-  color: var(--color-dark);
 }
