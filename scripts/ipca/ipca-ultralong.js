@@ -226,7 +226,7 @@ function processQuotes() {
         enabled: true,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
-      name: "Índice Debêntures DI",
+      name: "Índice IPCA Ultra Longo Prazo",
       data: rows.map((row) => {
         if (lowestIndex > parseFloat(row[yAxis])) {
           lowestIndex = parseFloat(row[yAxis]);

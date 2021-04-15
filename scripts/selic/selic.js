@@ -178,7 +178,9 @@ function processTickersWithHighRelevance() {
       data: topTen.map((d) => [d["Ativo"], parseFloat(d["Peso teórico"])]),
     };
 
-    if (document.getElementById("top-ten-chart")) {
+    const cond = document.getElementById("top-ten-chart")
+
+    if (cond) {
       const topTenChart = Highcharts.chart("top-ten-chart", {
         chart: {
           type: "bar",
@@ -226,7 +228,7 @@ function processQuotes() {
         enabled: true,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
-      name: "Índice Debêntures DI",
+      name: "Índice Selic",
       data: rows.map((row) => {
         if (lowestIndex > parseFloat(row[yAxis])) {
           lowestIndex = parseFloat(row[yAxis]);

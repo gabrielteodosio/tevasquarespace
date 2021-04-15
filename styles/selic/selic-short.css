@@ -124,6 +124,7 @@ table.horizontal-table {
 table.vertical-table.same-width,
 table.horizontal-table.same-width {
   width: 500px;
+  max-height: 510px;
 }
 
 .vertical-table thead {
@@ -169,7 +170,7 @@ table.horizontal-table.same-width {
 .vertical-table tbody tr td {
   padding: 8px;
   color: #666;
-  line-height: 1.6;
+  line-height: 1em;
   vertical-align: middle;
   border-bottom: 1px solid rgb(128, 128, 128);
 }
