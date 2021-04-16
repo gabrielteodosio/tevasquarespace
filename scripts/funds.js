@@ -306,7 +306,7 @@ function processQuotes() {
             return ("" + this.value.toFixed(2)).replace(".", ",");
           },
         },
-        min: lowestIndex / 2,
+        min: 50,
       },
       plotOptions: {
         area: {
@@ -602,7 +602,7 @@ function numberToPercentalDecimalsDigits(number, digits) {
   const decimalDigitsString = "" + decimalDigits;
   const commaIndex = decimalDigitsString.indexOf(".")
   if (digits == 0) {
-    return decimalDigitsString.slice(0, commaIndex - 1);
+    return decimalDigitsString.slice(0, commaIndex);
   }
   return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
@@ -612,7 +612,7 @@ function numberToDecimalsDigits(number, digits) {
   const decimalDigitsString = "" + decimalDigits;
   const commaIndex = decimalDigitsString.indexOf(".")
   if (digits == 0) {
-    return decimalDigitsString.slice(0, commaIndex - 1);
+    return decimalDigitsString.slice(0, commaIndex);
   }
   return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }

@@ -125,7 +125,9 @@ const app = new Vue({
 
     this.numberToPercentalDecimalsDigits = numberToPercentalDecimalsDigits.bind(this);
     this.numberToDecimalsDigits = numberToDecimalsDigits.bind(this);
-    this.findYearReturnIndex = findYearReturnIndex.bind(this)
+    this.findYearReturnIndex = findYearReturnIndex.bind(this);
+    this.findYearReturnIndex = findYearReturnIndex.bind(this);
+    this.formatDateToBr = formatDateToBr.bind(this);
   },
   mounted() {
     this.processQuotes();
@@ -178,28 +180,26 @@ function processTickersWithHighRelevance() {
       data: topTen.map((d) => [d["Ativo"], parseFloat(d["Peso teórico"])]),
     };
 
-    if (document.getElementById("top-ten-chart")) {
-      const topTenChart = Highcharts.chart("top-ten-chart", {
-        chart: {
-          type: "bar",
-          height: 500,
+    const topTenChart = Highcharts.chart("top-ten-chart", {
+      chart: {
+        type: "bar",
+        height: 500 * topTen.length / 10,
+      },
+      series: [trace],
+      exporting: { enabled: false },
+      legend: { enabled: false },
+      tooltip: { enabled: false },
+      xAxis: { visible: false },
+      yAxis: { visible: false },
+      title: { text: "" },
+      plotOptions: {
+        series: {
+          groupPadding: 0,
+          pointPadding: 0.26,
+          borderWidth: 0,
         },
-        series: [trace],
-        exporting: { enabled: false },
-        legend: { enabled: false },
-        tooltip: { enabled: false },
-        xAxis: { visible: false },
-        yAxis: { visible: false },
-        title: { text: "" },
-        plotOptions: {
-          series: {
-            groupPadding: 0,
-            pointPadding: 0.26,
-            borderWidth: 0,
-          },
-        },
-      });
-    }
+      },
+    });
   };
 
   const processBlob = async (blob) => {
@@ -299,7 +299,7 @@ function processQuotes() {
               return ("" + this.value.toFixed(2)).replace(".", ",");
             },
           },
-          min: lowestIndex / 2,
+          min: 50,
         },
         plotOptions: {
           area: {
@@ -714,7 +714,7 @@ function numberToPercentalDecimalsDigits(number, digits) {
   const decimalDigitsString = "" + decimalDigits;
   const commaIndex = decimalDigitsString.indexOf(".")
   if (digits == 0) {
-    return decimalDigitsString.slice(0, commaIndex - 1);
+    return decimalDigitsString.slice(0, commaIndex);
   }
   return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
@@ -724,7 +724,7 @@ function numberToDecimalsDigits(number, digits) {
   const decimalDigitsString = "" + decimalDigits;
   const commaIndex = decimalDigitsString.indexOf(".")
   if (digits == 0) {
-    return decimalDigitsString.slice(0, commaIndex - 1);
+    return decimalDigitsString.slice(0, commaIndex);
   }
   return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
@@ -852,4 +852,17 @@ function csvToJSON(csv) {
     result.push(obj)
   }
   return result
+}
+
+function formatDateToBr(date) {
+  const data = new Date(date);
+  const dataFormatada = adicionaZero(data.getDate()) + "/" + adicionaZero((data.getMonth() + 1)) + "/" + data.getFullYear();
+  return dataFormatada;
+}
+
+function adicionaZero(numero){
+  if (numero <= 9) 
+    return "0" + numero;
+  else
+    return numero; 
 }

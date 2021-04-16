@@ -102,7 +102,6 @@ div.left-inner-container div.metrics-charts-container {
 }
 
 .box {
-  width: 82%;
   margin: 10px;
   display: flex;
   flex-direction: column;
@@ -117,8 +116,8 @@ table tr:hover {
 table.vertical-table,
 table.horizontal-table {
   flex: 1;
-  line-height: 30px;
   border-spacing: 0;
+  overflow: scroll;
 }
 
 table.vertical-table.same-width,
@@ -127,12 +126,17 @@ table.horizontal-table.same-width {
   max-height: 510px;
 }
 
+th, td {
+  line-height: 29px;
+}
+
 .vertical-table thead {
   color: #222;
   font-size: 18px;
   text-align: left;
   text-transform: uppercase;
   white-space: nowrap;
+  /* background-color: red; */
 }
 
 .vertical-table thead th {
@@ -169,7 +173,6 @@ table.horizontal-table.same-width {
 .vertical-table tbody tr td {
   padding: 8px;
   color: #666;
-  line-height: 1.6;
   vertical-align: middle;
   border-bottom: 1px solid rgb(128, 128, 128);
 }
@@ -229,7 +232,6 @@ td.inverted-color {
 .horizontal-table tr td {
   padding: 8px;
   color: #666;
-  line-height: 1.6;
   text-align: center;
   vertical-align: middle;
   border-bottom: 1px solid rgb(128, 128, 128);
@@ -244,7 +246,6 @@ td.inverted-color {
 }
 
 .join > .box {
-  width: fit-content;
 }
 
 .join .box.horizontal {
