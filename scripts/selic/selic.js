@@ -703,23 +703,26 @@ function processMonthlyReturn() {
 // utlity functions
 
 function numberToPercentalDecimalsDigits(number, digits) {
-  const decimalDigits = parseFloat(number) * 100;
-  const decimalDigitsString = "" + decimalDigits;
-  const commaIndex = decimalDigitsString.indexOf(".")
-  if (digits == 0) {
-    return decimalDigitsString.slice(0, commaIndex - 1);
-  }
-  return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
-}
-
-function numberToDecimalsDigits(number, digits) {
-  const decimalDigits = parseFloat(number);
+  const decimalDigits = number * 100;
   const decimalDigitsString = "" + decimalDigits;
   const commaIndex = decimalDigitsString.indexOf(".")
   
   if (digits == 0) {
-    return decimalDigitsString.slice(0, commaIndex - 1);
+    return decimalDigitsString.replaceAll(".", ",");
   }
+  
+  return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
+}
+
+function numberToDecimalsDigits(number, digits) {
+  const decimalDigits = number;
+  const decimalDigitsString = "" + decimalDigits;
+  const commaIndex = decimalDigitsString.indexOf(".")
+  
+  if (digits == 0) {
+    return decimalDigitsString.slice(0, commaIndex);
+  }
+
   return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
 

@@ -703,30 +703,26 @@ function processMonthlyReturn() {
 // utlity functions
 
 function numberToPercentalDecimalsDigits(number, digits) {
-  if (Number.isNaN(number)) {
-    return "" + 0.0
-  }
-
-  const decimalDigits = parseFloat(number) * 100;
+  const decimalDigits = number * 100;
   const decimalDigitsString = "" + decimalDigits;
   const commaIndex = decimalDigitsString.indexOf(".")
+  
   if (digits == 0) {
-    return decimalDigitsString.slice(0, commaIndex);
+    return decimalDigitsString.replaceAll(".", ",");
   }
+  
   return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
 
 function numberToDecimalsDigits(number, digits) {
-  if (Number.isNaN(number)) {
-    return "" + 0.0
-  }
-
-  const decimalDigits = parseFloat(number);
+  const decimalDigits = number * 1;
   const decimalDigitsString = "" + decimalDigits;
   const commaIndex = decimalDigitsString.indexOf(".")
+  
   if (digits == 0) {
     return decimalDigitsString.slice(0, commaIndex);
   }
+
   return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
 
