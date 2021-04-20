@@ -83,6 +83,7 @@
 
 .input {
   position: relative;
+  width: 100%;
 }
 
 .input__label {
@@ -132,5 +133,19 @@
 }
 
 #indices-filter-text {
+  outline: none !important;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  /* background-color: orangered; */
+}
+
+#family-filter {
+  /* background-color: cyan; */
+  margin-right: 10px;
+  padding: 10px;
   outline: none !important;
 }

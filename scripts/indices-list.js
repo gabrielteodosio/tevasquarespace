@@ -11,7 +11,7 @@ document.getElementById("indices-filter-text").addEventListener(
           .innerHTML.toUpperCase();
 
         const condition = name.indexOf(filter) >= 0;
-        
+
         if (condition) list[i].style.display = "flex";
         else list[i].style.display = "none";
       }
@@ -20,6 +20,34 @@ document.getElementById("indices-filter-text").addEventListener(
     false
   )
 );
+
+document.getElementById("family-filter").addEventListener("change", (e) => {
+  const filter = e.target.value.toUpperCase();
+  const list = document.getElementById("indices-list").children;
+
+  if (filter === "ALL") {
+    for (let i = 0; i < list.length; i++) {
+      let name = list[i]
+        .getElementsByClassName("index-title")[0]
+        .innerHTML.toUpperCase();
+
+      list[i].style.display = "flex";
+    }
+
+    return;
+  }
+
+  for (let i = 0; i < list.length; i++) {
+    let name = list[i]
+      .getElementsByClassName("index-title")[0]
+      .innerHTML.toUpperCase();
+
+    const condition = name.indexOf(filter) >= 0;
+
+    if (condition) list[i].style.display = "flex";
+    else list[i].style.display = "none";
+  }
+});
 
 function navigateTo(endpoint) {
   window.location.href = "/" + endpoint;
