@@ -244,9 +244,7 @@ td.inverted-color {
   margin: auto 0;
 }
 
-.join .box.horizontal {
+div#top-ten-chart,
+div#due-date-chart {
   margin-top: 96px;
-}
-
-div#top-ten-chart {
 }
