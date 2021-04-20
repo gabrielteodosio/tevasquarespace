@@ -53,6 +53,9 @@ const app = new Vue({
     this.processVariationDiversityBoards = processVariationDiversityBoards.bind(this);
     this.processWomenNumbersBoards = processWomenNumbersBoards.bind(this);
     this.processYearsToEquality = processYearsToEquality.bind(this);
+
+    this.numberToPercentalDecimalsDigits = numberToPercentalDecimalsDigits.bind(this);
+    this.numberToDecimalsDigits = numberToDecimalsDigits.bind(this);
   },
   mounted() {
     this.processCompaniesWithMoreThan2Women();
@@ -74,10 +77,25 @@ const app = new Vue({
 });
 
 function processCompaniesWithMoreThan2Women() {
-
   const processBlob = async (blob) => {
     const text = await blob.text();
-    const data = JSON.parse(text);
+    let data = JSON.parse(text);
+
+    const cols = Object.keys(data);
+    console.log({ cols, data })
+
+    
+    data = Object.entries(data[cols[0]]).reduce((acc, cur) => {
+      const aux = { ...acc };
+      
+      cols.forEach((col) => {
+        aux = { ...aux, [cur[0]]: [data[col][cur[0]], cur[1], cur[0]] }
+      });
+      
+      return aux;
+    }, {})
+    console.log({ cols, data })
+
     this.companiesWithMoreThan2Women = data;
   }
 
@@ -88,6 +106,7 @@ function processCompaniesWithMoreThan2WomenRegion() {
   const processBlob = async (blob) => {
     const text = await blob.text();
     const data = JSON.parse(text);
+
     this.companiesWithMoreThan2WomenRegion = data;
   }
 
@@ -222,4 +241,34 @@ function processYearsToEquality() {
   }
 
   d3.blob(jsonUrls.years_to_equality).then(processBlob);
+}
+
+function numberToPercentalDecimalsDigits(number, digits) {
+  const decimalDigits = number * 100;
+  const decimalDigitsString = "" + decimalDigits;
+  const commaIndex = decimalDigitsString.indexOf(".")
+
+  if (commaIndex === -1) {
+    return decimalDigitsString.replaceAll(".", ",");
+  }
+  if (digits === 0) {
+    return decimalDigitsString.slice(0, commaIndex).replaceAll(".", ",");
+  }
+  
+  return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
+}
+
+function numberToDecimalsDigits(number, digits) {
+  const decimalDigits = number;
+  const decimalDigitsString = "" + decimalDigits;
+  const commaIndex = decimalDigitsString.indexOf(".")
+  
+  if (commaIndex === -1) {
+    return decimalDigitsString.replaceAll(".", ",");
+  }
+  if (digits == 0) {
+    return decimalDigitsString.slice(0, commaIndex).replaceAll(".", ",");
+  }
+
+  return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }

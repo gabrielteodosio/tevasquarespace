@@ -25,7 +25,6 @@ div.container {
   flex-wrap: wrap;
 
   align-items: center;
-  justify-content: space-around;
 }
 
 div.container div.chart-container {
@@ -245,12 +244,9 @@ td.inverted-color {
   margin: auto 0;
 }
 
-.join > .box {
-}
-
 .join .box.horizontal {
-  margin-top: 96px;
 }
 
 div#top-ten-chart {
+  margin-top: 5em;
 }
