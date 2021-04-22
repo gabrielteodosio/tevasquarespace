@@ -249,7 +249,7 @@ td.inverted-color {
 }
 
 .join div {
-  margin: auto 0;
+  /* margin: auto 0; */
 }
 
 div#top-ten-chart,
