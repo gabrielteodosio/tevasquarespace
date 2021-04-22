@@ -50,8 +50,8 @@ div.right-inner-container div.descrition-container {
   display: flex;
   flex-direction: column;
 
-  padding: 0.5em;
-  margin: 1em;
+  /* padding: 0.5em;
+  margin: 1em; */
 }
 
 div.descrition-container p {
@@ -101,7 +101,7 @@ div.left-inner-container div.metrics-charts-container {
 }
 
 .box {
-  margin: 10px;
+  /* margin: 10px; */
   display: flex;
   flex-direction: column;
   /* background-color: orange; */
@@ -142,7 +142,7 @@ th, td {
   font-weight: normal;
   padding: 8px;
 
-  border-bottom: 1px solid rgb(128, 128, 128);
+  border-bottom: 2px solid black;
 }
 
 .vertical-table thead th:not(:first-child) {
@@ -173,12 +173,17 @@ th, td {
   padding: 8px;
   color: #666;
   vertical-align: middle;
+}
+
+.vertical-table tbody tr:last-of-type {
   border-bottom: 1px solid rgb(128, 128, 128);
 }
 
 .vertical-table tbody tr td.row-title {
   white-space: nowrap;
-  text-transform: uppercase;
+  font-weight: bold;
+  /* border-right: 1px solid black; */
+  /* text-transform: capitalize; */
 }
 
 .inner .horizontal-table {
@@ -187,27 +192,29 @@ th, td {
 
 .horizontal-table tr {
   width: 100%;
-  text-transform: uppercase;
+  /* text-transform: capitalize; */
 }
 
 .horizontal-table tr.inverted-color,
 .vertical-table tr.inverted-color {
-  background-color: #222;
+  /* background-color: #222; */
 }
 
 .horizontal-table tr.inverted-color:hover,
 .vertical-table tr.inverted-color:hover {
-  background-color: #222;
+  background-color: white !important;
 }
 
 .horizontal-table tr.inverted-color th,
 .vertical-table tr.inverted-color th {
-  color: whitesmoke;
+  color: #222;
+  text-transform: capitalize;
+  font-weight: bold;
 }
 
 td.inverted-color {
-  background-color: #222;
-  color: whitesmoke !important;
+  /* background-color: #222;
+  color: whitesmoke !important; */
 }
 
 .horizontal-table tr th {
@@ -220,8 +227,9 @@ td.inverted-color {
 }
 
 .horizontal-table tr th.inverted-color {
-  background-color: #222 !important;
-  color: whitesmoke;
+  font-weight: bold;
+  /* background-color: #222 !important; */
+  /* color: whitesmoke; */
 }
 
 .horizontal-table tr th.center-text {
@@ -237,7 +245,7 @@ td.inverted-color {
 }
 
 .join {
-  justify-content: center !important;
+  /* justify-content: center !important; */
 }
 
 .join div {
