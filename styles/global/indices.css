@@ -101,8 +101,8 @@ div.left-inner-container div.metrics-charts-container {
 }
 
 .box {
-  /* margin: 10px; */
   display: flex;
+  margin-bottom: 0;
   flex-direction: column;
   /* background-color: orange; */
 }
