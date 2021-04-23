@@ -39,6 +39,8 @@
 
 .tab-content.active-tab {
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tab.active-tab {
