@@ -85,11 +85,6 @@ const lang = {
 
 Highcharts.setOptions({ lang });
 
-const CssSpinner = Vue.component("loading-css", {
-  template:
-    '<div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>',
-});
-
 Vue.config.devtools = true;
 const app = new Vue({
   el: "#funds-app",

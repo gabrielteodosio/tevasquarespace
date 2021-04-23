@@ -67,37 +67,33 @@ const lang = {
 };
 
 Highcharts.setOptions({ lang });
-const loadCsv = d3.blob("")
-
-const CssSpinner = Vue.component("loading-css", {
-  template:
-    '<div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>',
-});
 
 Vue.config.devtools = true;
 const app = new Vue({
   el: "#funds-app",
   data: () => ({
-    topTen: [],
-    convexity: {},
-    duration: {},
-    modifiedDuration: {},
-    yieldToMaturity: {},
+    quote: null,
+    dailyReturn: null,
     turnOverLTM: null,
-    ticksNumber: {},
-    repactuationMedia: {},
-    anualReturn: [],
     loadingMetrics: true,
-    standardDeviation: [],
+    topTen: [],
+    duration: {},
+    convexity: {},
+    ticksNumber: {},
+    anualReturn: [],
+    anualReturn: [],
+    sharpeIndex: [],
+    yieldToMaturity: {},
+    indexExposition: [],
     periodicsReturn: [],
+    modifiedDuration: {},
+    repactuationMedia: {},
+    standardDeviation: [],
     dueDateExposition: [],
     monthlyReturn: {
       years: [],
       filteredByMonths: [],
     },
-    anualReturn: [],
-    sharpeIndex: [],
-    indexExposition: [],
     quotesChart: {
       uuid: "quotes-chart",
       traces: [],
