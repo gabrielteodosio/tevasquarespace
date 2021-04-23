@@ -1,0 +1,6 @@
+
+.vertical-table thead tr th,
+.vertical-table tbody tr td:first-child {
+  background-color: #222222;
+  color: whitesmoke;
+}

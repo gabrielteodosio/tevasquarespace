@@ -622,7 +622,11 @@ function processDueDateExposition() {
 
     if (document.getElementById("due-date-chart")) {
       const topTenChart = Highcharts.chart("due-date-chart", {
-        chart: { type: "pie", marginBottom: 50 },
+        chart: {
+          type: "pie",
+          width: window.innerWidth / 4,
+          height: window.innerWidth / 4
+        },
         series: [trace],
         exporting: { enabled: false },
         title: { text: "" },

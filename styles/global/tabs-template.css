@@ -23,7 +23,7 @@
 .tab-bar {
   display: flex;
   flex: 1 1 100%;
-  margin: 0 10em;
+  margin-top: 1em;
   flex-direction: column;
 }
 
@@ -34,6 +34,7 @@
 
 .tab-content {
   display: none;
+  padding: 10px 1em;
 }
 
 .tab-content.active-tab {

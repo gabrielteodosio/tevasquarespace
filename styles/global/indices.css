@@ -40,10 +40,6 @@ section.description-container h3 {
   line-height: 30px;
 }
 
-section.description-container br {
-  line-height: 20px;
-}
-
 #quotes-chart {
   flex: 1;
   margin: 0;
@@ -80,8 +76,9 @@ div.left-inner-container div.metrics-charts-container {
 
 .box {
   display: flex;
-  margin-bottom: 0 !important;
   flex-direction: column;
+  justify-content: center;
+  margin-bottom: 0 !important;
   /* background-color: orange; */
 }
 
@@ -92,7 +89,6 @@ table tr:hover {
 
 table.vertical-table,
 table.horizontal-table {
-  flex: 1;
   border-spacing: 0;
   overflow: scroll;
 }
@@ -226,7 +222,6 @@ td.inverted-color {
   /* margin: auto 0; */
 }
 
-div#top-ten-chart,
-div#due-date-chart {
+div#top-ten-chart {
   margin-top: 148px;
 }
