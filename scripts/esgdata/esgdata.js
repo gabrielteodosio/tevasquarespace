@@ -53,70 +53,25 @@ const jsonUrls = {
   thermometer: `${host}esg-data/thermometer/Women on Board - thermometer.json`,
 };
 
-Vue.config.devtools = true;
-const app = new Vue({
-  el: "#esg-app",
-  data: () => ({
-    companiesWithMoreThan2Women: {},
-    companiesWithMoreThan2WomenRegion: {},
-    companiesWithMoreThan2WomenSegment: {},
-    equalityProjection: {},
-    genderAgeAdministrationBoard: {},
-    genderMandatesAdministrationBoard: {},
-    genderNumbersBoards: {},
-    genderPresidentAdministrationBoard: {},
-    genderPresidentDirectorBoard: {},
-    nPositionsBoards: {},
-    totalNumberMenWomen: {},
-    variationDiversity1Q2021: {},
-    variationDiversityBoards: {},
-    womenNumbersBoards: {},
-    yearsToEquality: {},
-  }),
-  created() {
-    this.processCompaniesWithMoreThan2Women = processCompaniesWithMoreThan2Women.bind(this);
-    this.processCompaniesWithMoreThan2WomenRegion = processCompaniesWithMoreThan2WomenRegion.bind(this);
-    this.processCompaniesWithMoreThan2WomenSegment = processCompaniesWithMoreThan2WomenSegment.bind(this);
-    this.processEqualityProjection = processEqualityProjection.bind(this);
-    this.processGenderAgeAdministrationBoard = processGenderAgeAdministrationBoard.bind(this);
-    this.processGenderMandatesAdministrationBoard = processGenderMandatesAdministrationBoard.bind(this);
-    this.processGenderNumbersBoards = processGenderNumbersBoards.bind(this);
-    this.processGenderPresidentAdministrationBoard = processGenderPresidentAdministrationBoard.bind(this);
-    this.processGenderPresidentDirectorBoard = processGenderPresidentDirectorBoard.bind(this);
-    this.processNPositionsBoards = processNPositionsBoards.bind(this);
-    this.processTotalNumberMenWomen = processTotalNumberMenWomen.bind(this);
-    this.processVariationDiversity1Q2021 = processVariationDiversity1Q2021.bind(this);
-    this.processVariationDiversityBoards = processVariationDiversityBoards.bind(this);
-    this.processWomenNumbersBoards = processWomenNumbersBoards.bind(this);
-    this.processYearsToEquality = processYearsToEquality.bind(this);
+document.addEventListener("DOMContentLoaded", function (event) {
+  processThermother();
+  processCompaniesDistributionNumberWomenBoards();
 
-    this.processThermother = processThermother.bind(this);
-    this.processCompaniesDistributionNumberWomenBoards =
-      processCompaniesDistributionNumberWomenBoards.bind(this);
-
-    this.numberToPercentalDecimalsDigits = numberToPercentalDecimalsDigits.bind(this);
-    this.numberToDecimalsDigits = numberToDecimalsDigits.bind(this);
-  },
-  mounted() {
-    this.processThermother();
-    this.processCompaniesDistributionNumberWomenBoards();
-
-    // this.processCompaniesWithMoreThan2Women();
-    // this.processCompaniesWithMoreThan2WomenRegion();
-    // this.processCompaniesWithMoreThan2WomenSegment();
-    // this.processEqualityProjection();
-    // this.processGenderAgeAdministrationBoard();
-    // this.processGenderMandatesAdministrationBoard();
-    this.processGenderNumbersBoards();
-    // this.processGenderPresidentAdministrationBoard();
-    // this.processGenderPresidentDirectorBoard();
-    // this.processNPositionsBoards();
-    // this.processTotalNumberMenWomen();
-    // this.processVariationDiversity1Q2021();
-    // this.processVariationDiversityBoards();
-    // this.processWomenNumbersBoards();
-    // this.processYearsToEquality();
-  },
+  // processCompaniesWithMoreThan2Women();
+  // processCompaniesWithMoreThan2WomenRegion();
+  // processCompaniesWithMoreThan2WomenSegment();
+  // processEqualityProjection();
+  // processGenderAgeAdministrationBoard();
+  // processGenderMandatesAdministrationBoard();
+  processGenderNumbersBoards();
+  // processGenderPresidentAdministrationBoard();
+  // processGenderPresidentDirectorBoard();
+  // processNPositionsBoards();
+  // processTotalNumberMenWomen();
+  // processVariationDiversity1Q2021();
+  // processVariationDiversityBoards();
+  // processWomenNumbersBoards();
+  // processYearsToEquality();
 });
 
 function processThermother() {
@@ -143,18 +98,18 @@ function processThermother() {
         min: 0,
         max: 100,
         title: { enabled: false },
-        plotBands:[
+        plotBands: [
           {
-            from:0,
-            to:100,
-            color: 'rgba(103,103,103,.35)'
+            from: 0,
+            to: 100,
+            color: "rgba(103,103,103,.35)",
           },
         ],
       },
       plotOptions: {
         series: {
-          pointWidth: 150
-        }
+          pointWidth: 150,
+        },
       },
     };
 
@@ -203,8 +158,16 @@ function processCompaniesDistributionNumberWomenBoards() {
     const text = await blob.text();
     const data = JSON.parse(text);
 
-    const jsonKey = "% de empresas com 0 mulheres em conselhos de administracao";
-    const periods = ['4Q2016', '4Q2017', '4Q2018', '4Q2019', '4Q2020', '1Q2021'];
+    const jsonKey =
+      "% de empresas com 0 mulheres em conselhos de administracao";
+    const periods = [
+      "4Q2016",
+      "4Q2017",
+      "4Q2018",
+      "4Q2019",
+      "4Q2020",
+      "1Q2021",
+    ];
     const series = periods.map((period) => parseFloat(data[jsonKey][period]));
 
     const chartOptions = {
@@ -221,10 +184,10 @@ function processCompaniesDistributionNumberWomenBoards() {
         column: {
           pointWidth: 50,
           pointPadding: 0.2,
-          borderWidth: 0
-        }
+          borderWidth: 0,
+        },
       },
-    }
+    };
 
     const chart = Highcharts.chart(
       "distribution-number-women-chart",
@@ -233,7 +196,7 @@ function processCompaniesDistributionNumberWomenBoards() {
           categories: periods,
         },
         yAxis: {
-          title: { enabled: false }
+          title: { enabled: false },
         },
         series: [
           {
@@ -245,7 +208,9 @@ function processCompaniesDistributionNumberWomenBoards() {
     );
   };
 
-  d3.blob(jsonUrls.companies_distribution_number_women_boards).then(processBlob);
+  d3.blob(jsonUrls.companies_distribution_number_women_boards).then(
+    processBlob
+  );
 }
 
 function processCompaniesWithMoreThan2WomenRegion() {
@@ -321,10 +286,10 @@ function processGenderNumbersBoards() {
         column: {
           pointWidth: 50,
           pointPadding: 0.2,
-          borderWidth: 0
-        }
+          borderWidth: 0,
+        },
       },
-    }
+    };
 
     const chart = Highcharts.chart(
       "gender-numbers-chart",
@@ -333,7 +298,7 @@ function processGenderNumbersBoards() {
           // categories: periods,
         },
         yAxis: {
-          title: { enabled: false }
+          title: { enabled: false },
         },
         series: [
           {
@@ -344,7 +309,7 @@ function processGenderNumbersBoards() {
       })
     );
 
-    console.log({ data })
+    console.log({ data });
   };
 
   d3.blob(jsonUrls.gender_numbers_boards).then(processBlob);
