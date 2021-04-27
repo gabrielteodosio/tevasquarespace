@@ -208,7 +208,7 @@ function processQuotes() {
         enabled: true,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
-      name: "Índice de Ações ESG Mulheres",
+      name: "Índice Teva Mulheres na Liderança",
       data: rows.map((row) => {
         if (lowestIndex > parseFloat(row[yAxis])) {
           lowestIndex = parseFloat(row[yAxis]);
