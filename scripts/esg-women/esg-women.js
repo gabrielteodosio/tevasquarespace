@@ -173,7 +173,7 @@ function processTickersWithHighRelevance() {
       plotOptions: {
         series: {
           pointWidth: 24,
-          pointPadding: 4,
+          pointPadding: [5, 0, 5, 0],
           borderWidth: 0,
         },
       },
