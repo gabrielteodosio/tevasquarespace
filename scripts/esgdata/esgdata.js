@@ -20,6 +20,7 @@ const host = "https://storage.googleapis.com/teva-indices-public/";
 */
 
 const jsonUrls = {
+  companies_score: `${host}esg-data/score/companies_score.json`,
   president_adm_board: `${host}esg-data/study/president_adm_board.json`,
   companies_distribution_number_women_boards: `${host}esg-data/study/companies_distribution_number_women_boards.json`,
   companies_with_more_than_2women:
@@ -57,7 +58,8 @@ const jsonUrls = {
 document.addEventListener("DOMContentLoaded", function (event) {
   processThermother();
   processCompaniesDistributionNumberWomenBoards();
-  processPresidentAdmBoard();
+  processCompaniesScore();
+  // processPresidentAdmBoard();
 
   // processCompaniesWithMoreThan2Women();
   // processCompaniesWithMoreThan2WomenRegion();
@@ -494,6 +496,58 @@ function processPresidentAdmBoard() {
   d3.blob(jsonUrls.president_adm_board).then(processBlob);
 }
 
+function processCompaniesScore() {
+  const processBlob = async (blob) => {
+    const text = await blob.text();
+    const data = JSON.parse(text);
+    const jsonKeys = ["Razão social", "Pontuação final"];
+    
+    const series = sortKeysByValue(data[jsonKeys[1]]).map((key) => {
+      return [data[jsonKeys[0]][key], data[jsonKeys[0]][key], data[jsonKeys[1]][key]]
+    })
+
+    const chartOptions = {
+      chart: {
+        type: 'column',
+        backgroundColor: 'transparent',
+      },
+      credits: { enabled: false },
+      exporting: { enabled: false },
+      title: null,
+      legend: {
+        enabled: false,
+        labelFormat: '{name}',
+        itemStyle: {
+          color: "#fff",
+        },
+      },
+      tooltip: {
+        formatter: function() {
+          return `${this.point.label}: <strong>${numberToDecimalsDigits(this.y, 2)}</strong>`;
+        }
+      }
+    };
+
+    const chart = Highcharts.chart(
+      "companies-score",
+      Highcharts.merge(chartOptions, {
+        xAxis: {
+          visible: false,
+        },
+        yAxis: {
+          title: null,
+        },
+        series: [{
+          keys: ['name', 'label', 'y'],
+          data: series,
+        }],
+      })
+    );
+  };
+
+  d3.blob(jsonUrls.companies_score).then(processBlob);
+}
+
 // utility functions
 
 function numberToPercentalDecimalsDigits(number, digits) {
@@ -584,4 +638,11 @@ function quarterToTrimester(quarter) {
     }
   }
   return result;
+}
+
+function sortKeysByValue(object){
+  const sortable = Object.keys(object)
+    .sort((a,b) => object[a] > object[b] ? -1 : object[a] < object[b] ? 1 : 0)
+
+  return sortable;
 }
