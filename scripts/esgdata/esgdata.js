@@ -20,6 +20,7 @@ const host = "https://storage.googleapis.com/teva-indices-public/";
 */
 
 const jsonUrls = {
+  president_adm_board: `${host}esg-data/study/president_adm_board.json`,
   companies_distribution_number_women_boards: `${host}esg-data/study/companies_distribution_number_women_boards.json`,
   companies_with_more_than_2women:
     "https://combinatronics.com/gabrielteodosio/tevasquarespace/master/json/esgdata/companies_with_more_than_2women.json",
@@ -56,6 +57,7 @@ const jsonUrls = {
 document.addEventListener("DOMContentLoaded", function (event) {
   processThermother();
   processCompaniesDistributionNumberWomenBoards();
+  processPresidentAdmBoard();
 
   // processCompaniesWithMoreThan2Women();
   // processCompaniesWithMoreThan2WomenRegion();
@@ -83,7 +85,7 @@ function processThermother() {
       chart: {
         type: "column",
         width: 200,
-        height: 240,
+        backgroundColor: "transparent",
       },
       title: null,
       credits: { enabled: false },
@@ -116,6 +118,13 @@ function processThermother() {
     const chart = Highcharts.chart(
       "thermomether-chart",
       Highcharts.merge(chartOptions, {
+        yAxis: {
+          labels: {
+            style: {
+              color: 'white'
+            },
+          },
+        },
         series: [
           {
             name: "Temperatura",
@@ -126,7 +135,7 @@ function processThermother() {
     );
   };
 
-  d3.blob(jsonUrls.thermometer, { method: "GET" }).then(processBlob);
+  d3.blob(jsonUrls.thermometer).then(processBlob);
 }
 
 function processCompaniesWithMoreThan2Women() {
@@ -160,13 +169,16 @@ function processCompaniesDistributionNumberWomenBoards() {
 
     const jsonKey =
       "% de empresas com 0 mulheres em conselhos de administracao";
+      
+    let todayYear = new Date().getFullYear();
+
     const periods = [
-      "4Q2016",
-      "4Q2017",
-      "4Q2018",
-      "4Q2019",
-      "4Q2020",
-      "1Q2021",
+      `4Q${todayYear-5}`,  // dez/2016
+      `4Q${todayYear-4}`,  // dez/2017
+      `4Q${todayYear-3}`,  // dez/2018
+      `4Q${todayYear-2}`,  // dez/2019
+      `4Q${todayYear-1}`,  // dez/2020
+      `1Q${todayYear}`,    // dez/2021
     ];
     const series = periods.map((period) => parseFloat(data[jsonKey][period]));
 
@@ -174,11 +186,11 @@ function processCompaniesDistributionNumberWomenBoards() {
       chart: {
         type: "column",
         width: 500,
+        backgroundColor: "transparent",
       },
       title: null,
       credits: { enabled: false },
       exporting: { enabled: false },
-      tooltip: { enabled: false },
       legend: { enabled: false },
       plotOptions: {
         column: {
@@ -193,19 +205,37 @@ function processCompaniesDistributionNumberWomenBoards() {
       "distribution-number-women-chart",
       Highcharts.merge(chartOptions, {
         xAxis: {
-          categories: periods,
+          categories: periods.map((period) => quarterToTrimester(period)),
+          labels: {
+            style: {
+              color: 'white'
+            },
+          },
+          plotLines: [{
+            color: 'rgba(0, 0, 0, 0.18)', // Color value
+            dashStyle: 'dash', // Style of the plot line. Default to solid
+            value: 4.5, // Value of where the line will appear
+            width: 2 // Width of the line    
+          }]
         },
         yAxis: {
+          visible: false,
           title: { enabled: false },
+        },
+        tooltip: {
+          formatter: function() {
+            return `${this.point.category}: <strong>${numberToDecimalsDigits(this.y, 2)} %</strong>`;
+          }
+          // valueDecimals: 2,
+          // valueSuffix: " %",
         },
         series: [
           {
-            name: "Values",
+            name: "",
             data: series,
           },
         ],
-      })
-    );
+      }));
   };
 
   d3.blob(jsonUrls.companies_distribution_number_women_boards).then(
@@ -274,42 +304,54 @@ function processGenderNumbersBoards() {
 
     const chartOptions = {
       chart: {
-        type: "column",
-        width: 500,
+        type: 'item',
+        width: 550,
+        backgroundColor: 'transparent',
       },
-      title: null,
       credits: { enabled: false },
       exporting: { enabled: false },
-      tooltip: { enabled: false },
-      legend: { enabled: false },
-      plotOptions: {
-        column: {
-          pointWidth: 50,
-          pointPadding: 0.2,
-          borderWidth: 0,
-        },
+      title: null,
+      legend: {
+        enabled: true,
+        labelFormat: '{name}',
+        itemStyle: {
+          color: "#fff",
+        }
       },
     };
 
     const chart = Highcharts.chart(
       "gender-numbers-chart",
       Highcharts.merge(chartOptions, {
-        xAxis: {
-          // categories: periods,
-        },
-        yAxis: {
-          title: { enabled: false },
-        },
-        series: [
-          {
-            name: "Values",
-            // data: series,
+        series: [{
+          name: 'Representatividade',
+          keys: ['name', 'y', 'color', 'label'],
+          data: [
+            ['Homens', 1822, 'rgb(197, 197, 197)', 'HOMENS'],
+            ['Mulheres', 265, '#7cb5ec', 'MULHERES'],
+          ],
+          dataLabels: {
+            enabled: false,
+            format: '{point.label}'
           },
-        ],
+          
+          // Circular options
+          center: ['50%', '88%'],
+          size: '150%',
+          startAngle: -100,
+          endAngle: 100
+        }],
+        plotOptions: {
+          item: {
+            lineWidth: 0,
+            pointPadding: 0.3,
+            borderWidth: 0,
+          },
+        },
       })
     );
 
-    console.log({ data });
+    // console.log({ data });
   };
 
   d3.blob(jsonUrls.gender_numbers_boards).then(processBlob);
@@ -395,6 +437,63 @@ function processYearsToEquality() {
   d3.blob(jsonUrls.years_to_equality).then(processBlob);
 }
 
+function processPresidentAdmBoard() {
+  const processBlob = async (blob) => {
+    const text = await blob.text();
+    const data = JSON.parse(text);
+    
+    const chartOptions = {
+      chart: {
+        width: 500,
+        type: "bar",
+        backgroundColor: "transparent",
+      },
+      title: null,
+      legend: { enabled: false },
+      credits: { enabled: false },
+      tooltip: { enabled: false },
+      exporting: { enabled: false },
+      
+      // the value axis
+      xAxis: {
+        visible: true,
+      },
+      yAxis: {
+        title: { enabled: false },
+      },
+      plotOptions: {
+        series: {
+          pointWidth: 80,
+        },
+      },
+    };
+
+    const chart = Highcharts.chart(
+      "president-adm-chart",
+      Highcharts.merge(chartOptions, {
+        yAxis: {
+          labels: {
+            style: {
+              color: 'white'
+            },
+          },
+        },
+        series: [
+          {
+            keys: ['name', 'y', 'label'],
+            data: [
+              ['Homens', 20, 'Homens', 20],
+              ['Mulheres', 10, 'Mulheres', 10],
+            ],
+          },
+        ],
+      })
+    );
+  };
+
+  d3.blob(jsonUrls.president_adm_board).then(processBlob);
+}
+
 // utility functions
 
 function numberToPercentalDecimalsDigits(number, digits) {
@@ -429,4 +528,60 @@ function numberToDecimalsDigits(number, digits) {
   return decimalDigitsString
     .slice(0, commaIndex + 1 + digits)
     .replaceAll(".", ",");
+}
+
+
+function numberToPercentalDecimalsDigits(number, digits) {
+  const decimalDigits = number * 100;
+  const decimalDigitsString = "" + decimalDigits;
+  const commaIndex = decimalDigitsString.indexOf(".")
+
+  if (commaIndex === -1) {
+    return decimalDigitsString.replaceAll(".", ",");
+  }
+  if (digits === 0) {
+    return decimalDigitsString.slice(0, commaIndex).replaceAll(".", ",");
+  }
+  
+  return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
+}
+
+function numberToDecimalsDigits(number, digits) {
+  const decimalDigits = number;
+  const decimalDigitsString = "" + decimalDigits;
+  const commaIndex = decimalDigitsString.indexOf(".")
+  
+  if (commaIndex === -1) {
+    return decimalDigitsString.replaceAll(".", ",");
+  }
+  if (digits == 0) {
+    return decimalDigitsString.slice(0, commaIndex).replaceAll(".", ",");
+  }
+
+  return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
+}
+
+// 4Q2022
+function quarterToYear(quarter) {
+  return ("" + quarter).replaceAll(/(4Q|3Q|2Q|1Q)/ig, "");
+}
+
+// 1 Tri: Março
+// 2 Tri: Junho
+// 3 Tri: Setembro
+// 4 Tri: Dezembro
+
+// 
+function quarterToTrimester(quarter) {
+  const arr = ["1Q", "2Q", "3Q", "4Q"];
+  const aux = ["Mar", "Jun", "Set", "Dez"];
+
+  let result = quarterToYear(quarter);
+  for (let i = 0; i < arr.length; i++) {
+    const quarterString = ("" + quarter);
+    if(quarterString.includes(arr[i])) {
+      result = aux[i] + "-" + result
+    }
+  }
+  return result;
 }
