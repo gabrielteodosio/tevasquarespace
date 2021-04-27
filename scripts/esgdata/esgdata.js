@@ -470,28 +470,30 @@ function processPresidentAdmBoard() {
       },
     };
 
-    const chart = Highcharts.chart(
-      "president-adm-chart",
-      Highcharts.merge(chartOptions, {
-        yAxis: {
-          labels: {
-            style: {
-              color: 'white'
+    if (document.getElementById("president-adm-chart")) {
+      const chart = Highcharts.chart(
+        "president-adm-chart",
+        Highcharts.merge(chartOptions, {
+          yAxis: {
+            labels: {
+              style: {
+                color: 'white'
+              },
             },
           },
-        },
-        series: [
-          {
-            keys: ['name', 'y', 'label'],
-            data: [
-              ['Homens', 20, 'Homens', 20],
-              ['Mulheres', 10, 'Mulheres', 10],
-            ],
-          },
-        ],
-      })
-    );
-  };
+          series: [
+            {
+              keys: ['name', 'y', 'label'],
+              data: [
+                ['Homens', 20, 'Homens', 20],
+                ['Mulheres', 10, 'Mulheres', 10],
+              ],
+            },
+          ],
+        })
+      );
+    }
+  }
 
   d3.blob(jsonUrls.president_adm_board).then(processBlob);
 }
