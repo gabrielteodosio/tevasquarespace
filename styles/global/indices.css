@@ -225,3 +225,17 @@ td.inverted-color {
 div#top-ten-chart {
   margin-top: 60px;
 }
+
+.download-buttons-container {
+  display: flex;
+  padding: 40px 0;
+}
+
+/* a.download-button:first-child {
+} */
+
+a.download-button {
+  margin-right: 20px;
+  color: #222;
+  font-weight: bold;
+}
