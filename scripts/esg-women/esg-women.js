@@ -160,8 +160,10 @@ function processTickersWithHighRelevance() {
       chart: {
         type: "bar",
         height: 500 * topTen.length / 10,
+        backgroundColor: "transparent",
       },
       series: [trace],
+      credits: { enabled: false },
       exporting: { enabled: false },
       legend: { enabled: false },
       tooltip: { enabled: false },
@@ -267,6 +269,7 @@ function processQuotes() {
         chart: {
           margin: [30, 0, 30, 0],
         },
+        credits: { enabled: false },
         series: this.quotesChart.traces,
         scrollbar: { enabled: true },
         exporting: { enabled: false },
@@ -422,15 +425,17 @@ function processQuotes() {
     const text = await blob.text();
     const rows = csvToJSON(text);
     processFile(rows)
-  }
+  };
 
-  d3.blob(csvsUrls.ibovespa).then(async (blob) => {
+  const processIbovespa = async (blob) => {
     const text = await blob.text();
     const rows = csvToJSON(text);
     ibovespaData = rows;
 
     d3.blob(csvsUrls.quotes).then(processBlob);
-  })
+  };
+
+  d3.blob(csvsUrls.ibovespa).then(processIbovespa)
 }
 
 function processStandardDeviation() {
@@ -518,7 +523,9 @@ function processYieldToMaturity() {
 }
 
 function processAnualReturn() {
-  const processFile = (rows) => (this.anualReturn = rows.sort((a,b) => desc(a, b, "Ano do retorno")));
+  const processFile = (rows) => {
+    return this.anualReturn = rows.sort((a,b) => desc(a, b, "Ano do retorno"))
+  };
   
   const processBlob = async (blob) => {
     const text = await blob.text();
@@ -684,15 +691,19 @@ function processMonthlyReturn() {
   const processFile = (rows) => {
     const years = Array.from(
       new Set(
-        rows.map((data) => new Date(Object.values(data)[0]).getFullYear())
+        rows.map((data) => {
+          const d = data["Mês/ano do retorno"]
+          return d.slice(d.indexOf("/") + 1);
+        })
       )
     ).sort(desc);
 
     let filteredByMonths = years.reduce((acc, cur) => {
       let dataByMonth = rows
-        .filter(
-          (data) => new Date(data["Mês/ano do retorno"]).getFullYear() == cur
-        )
+        .filter((data) => {
+          const d = data["Mês/ano do retorno"]
+          return d.slice(d.indexOf("/") + 1) == cur;
+        })
         .map((data) => data["Retorno"]);
 
       if (dataByMonth.length < 12) {
@@ -824,9 +835,9 @@ function desc(a, b, column) {
 function findYearReturnIndex(year) {
   for (let idx = 0; idx < this.anualReturn.length; idx++) {
     const ret = this.anualReturn[idx];
-    const yr = parseInt(ret["Ano do retorno"]);
+    const yr = ret["Ano do retorno"];
     
-    if (yr === year) {
+    if (yr == year) {
       return idx;
     }
   }

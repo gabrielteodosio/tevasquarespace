@@ -92,7 +92,6 @@ function processThermother() {
       title: null,
       credits: { enabled: false },
       exporting: { enabled: false },
-      tooltip: { enabled: false },
       legend: { enabled: false },
       // the value axis
       xAxis: {
@@ -130,9 +129,18 @@ function processThermother() {
         series: [
           {
             name: "Temperatura",
+            label: "Temperatura",
             data: [data["Temperatura"]],
           },
         ],
+        tooltip: {
+          enabled: true,
+          formatter: function() {
+            return "Temperatura: <b>" +
+            numberToDecimalsDigits(this.point.y, 2) +
+            "</b>";
+          }
+        },
       })
     );
   };
@@ -301,59 +309,154 @@ function processGenderNumbersBoards() {
     const text = await blob.text();
     const data = JSON.parse(text);
 
-    const prefix = "% de mulheres em";
-    // const jsonKey = `${prefix} `
+    const prefixes = ["% de mulheres em", "% de homens em"];
+    const suffixes = [
+      "conselhos de administracao",
+      "conselhos fiscais",
+      "diretorias",
+      "comites de auditoria",
+      "outros comites"
+    ];
+
+    // 1 Tri: Março
+    // 2 Tri: Junho
+    // 3 Tri: Setembro
+    // 4 Tri: Dezembro
+    const quarter = getActualQ();
+
+    const d = {};
+    for (let i = 0; i < suffixes.length * 2; i++) {
+      const prefix = prefixes[i % 2 === 0 ? 0 : 1];
+      const suffix = suffixes[i % suffixes.length];
+
+      const jsonKey = `${prefix} ${suffix}`;
+      let key = `${quarter}${new Date().getFullYear()}`;
+      
+      if (!data[jsonKey].hasOwnProperty(key)) {
+        key = `${quarter}${new Date().getFullYear() - 1}`
+      }
+
+      d[jsonKey] = data[jsonKey][key];
+    }
 
     const chartOptions = {
       chart: {
-        type: 'item',
         width: 550,
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
       },
       credits: { enabled: false },
       exporting: { enabled: false },
       title: null,
       legend: {
         enabled: true,
-        labelFormat: '{name}',
-        itemStyle: {
-          color: "#fff",
-        }
+        labelFormat: "{name}",
+        itemStyle: { color: "#fff" },
       },
     };
 
-    const chart = Highcharts.chart(
-      "gender-numbers-chart",
-      Highcharts.merge(chartOptions, {
-        series: [{
-          name: 'Representatividade',
-          keys: ['name', 'y', 'color', 'label'],
-          data: [
-            ['Homens', 1822, 'rgb(197, 197, 197)', 'HOMENS'],
-            ['Mulheres', 265, '#7cb5ec', 'MULHERES'],
-          ],
-          dataLabels: {
-            enabled: false,
-            format: '{point.label}'
+    if (document.getElementById("gender-numbers-chart")) {
+      const chart = Highcharts.chart(
+        "gender-numbers-chart",
+        Highcharts.merge(chartOptions, {
+          chart: { type: "item" },
+          series: [{
+            name: 'Representatividade',
+            keys: ['name', 'y', 'color', 'label'],
+            data: [
+              ['Homens', 1822, 'rgb(197, 197, 197)', 'HOMENS'],
+              ['Mulheres', 265, '#7cb5ec', 'MULHERES'],
+            ],
+            dataLabels: {
+              enabled: false,
+              format: '{point.label}'
+            },
+            
+            // Circular options
+            center: ['50%', '88%'],
+            size: '150%',
+            startAngle: -100,
+            endAngle: 100
+          }],
+          plotOptions: {
+            item: {
+              lineWidth: 0,
+              pointPadding: 0.3,
+              borderWidth: 0,
+            },
           },
-          
-          // Circular options
-          center: ['50%', '88%'],
-          size: '150%',
-          startAngle: -100,
-          endAngle: 100
-        }],
-        plotOptions: {
-          item: {
-            lineWidth: 0,
-            pointPadding: 0.3,
-            borderWidth: 0,
-          },
-        },
-      })
-    );
+        })
+      );
+    }
 
-    // console.log({ data });
+    if (document.getElementById("gender-numbers-stack-chart")) {
+      const keys = suffixes.map((suffix) => {
+        const filteredKeys = Object.keys(d).filter((k) => k.includes(suffix)).sort(desc);
+        return filteredKeys;
+      }).flat(1);
+
+      const series = keys.reduce((acc, cur, i) => {
+        const idx = i % 2 === 0 ? 0 : 1;
+        acc[idx]['data'] = [...acc[idx]['data'], d[cur]];
+        return acc;
+      }, [
+        { name: "Mulheres", data: [] },
+        { name: "Homens", data: [] },
+      ]);
+
+      // Categorias fixas
+      const chart = Highcharts.chart(
+        "gender-numbers-stack-chart",
+        Highcharts.merge(chartOptions, {
+          series: series,
+          chart: { type: "column" },
+          tooltip: {
+            formatter: function() {
+              return this.series.name +
+              ": <b>" +
+              numberToDecimalsDigits(this.point.y, 2) +
+              " %</b>"
+            }
+          },
+          xAxis: {
+            categories: [
+              "Conselhos de Administração",
+              "Conselhos Fiscais",
+              "Diretorias",
+              "Comitês de Auditoria",
+              "Outros Comitês",
+            ],
+            labels: {
+              style: { color: 'white' }
+            }
+          },
+          yAxis: {
+            min: 0,
+            max: 100,
+            title: null,
+            labels: {
+              style: { color: 'white' }
+            },
+            stackLabels: {
+              enabled: false,
+              style: {
+                fontWeight: 'bold',
+                color: ( // theme
+                  Highcharts.defaultOptions.title.style &&
+                  Highcharts.defaultOptions.title.style.color
+                ) || 'gray'
+              }
+            }
+          },
+          plotOptions: {
+            column: {
+              stacking: 'normal',
+              dataLabels: { enabled: false }
+            }
+          },
+        })
+      );
+    }
+
   };
 
   d3.blob(jsonUrls.gender_numbers_boards).then(processBlob);
@@ -543,6 +646,18 @@ function processCompaniesScore() {
           keys: ['name', 'label', 'y'],
           data: series,
         }],
+        plotOptions: {
+          series: {
+            borderWidth: 0,
+            color: {
+              linearGradient: [0, 0, window.innerWidth / 2, 0],
+              stops: [
+                [0, '#4cb6e0'],
+                [1, '#e21b1b']
+              ]
+            }
+          }
+        },
       })
     );
   };
@@ -647,4 +762,40 @@ function sortKeysByValue(object){
     .sort((a,b) => object[a] > object[b] ? -1 : object[a] < object[b] ? 1 : 0)
 
   return sortable;
+}
+
+function getActualQ() {
+  const today = new Date();
+  const month = today.getMonth();
+
+  //  0 ,  1 ,  2 ,  3 ,  4 ,  5 ,  6 ,  7 ,  8 ,  9 , 10 , 11
+  // jan, fev, mar, abr, mai, jun, jul, ago, set, out, nov, dez
+
+  if (month < 3) {
+    return "4Q";
+  }
+  
+  if (month < 6) {
+    return "1Q";
+  }
+  
+  if (month < 9) {
+    return "2Q";
+  }
+  
+  return "3Q";
+}
+
+function asc(a, b, column) {
+  if (column && a[column] && b[column]) {
+    return a[column] < b[column] ? -1 : a[column] > b[column] ? 1 : 0;
+  }
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
+function desc(a, b, column) {
+  if (column && a[column] && b[column]) {
+    return a[column] < b[column] ? 1 : a[column] > b[column] ? -1 : 0;
+  }
+  return a < b ? 1 : a > b ? -1 : 0;
 }
