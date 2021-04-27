@@ -418,6 +418,7 @@ function processGenderNumbersBoards() {
             }
           },
           xAxis: {
+            gridLineColor: 'transparent',
             categories: [
               "Conselhos de Administração",
               "Conselhos Fiscais",
@@ -433,6 +434,8 @@ function processGenderNumbersBoards() {
             min: 0,
             max: 100,
             title: null,
+            visible: false,
+            gridLineColor: 'transparent',
             labels: {
               style: { color: 'white' }
             },
@@ -448,6 +451,9 @@ function processGenderNumbersBoards() {
             }
           },
           plotOptions: {
+            series: {
+              borderWidth: 0,
+            },
             column: {
               stacking: 'normal',
               dataLabels: { enabled: false }
@@ -565,16 +571,24 @@ function processPresidentAdmBoard() {
         yAxis: {
           min: 0,
           max: 100,
+          title: null,
+          gridLineColor: 'transparent',
           labels: {
             style: { color: 'white' }
           },
         },
         xAxis: {
           title: null,
+          gridLineColor: 'transparent',
           labels: {
             style: { color: 'white' }
           },
           categories: ["Homens", "Mulheres"]
+        },
+        plotOptions: {
+          series: {
+            borderWidth: 0
+          },
         },
         tooltip: {
           formatter: function() {

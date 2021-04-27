@@ -172,8 +172,8 @@ function processTickersWithHighRelevance() {
       title: { text: "" },
       plotOptions: {
         series: {
-          groupPadding: 0,
-          pointPadding: 0.26,
+          pointWidth: 24,
+          pointPadding: 4,
           borderWidth: 0,
         },
       },
