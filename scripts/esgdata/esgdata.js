@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
   processThermother();
   processCompaniesDistributionNumberWomenBoards();
   processCompaniesScore();
-  // processPresidentAdmBoard();
+  processPresidentAdmBoard();
 
   // processCompaniesWithMoreThan2Women();
   // processCompaniesWithMoreThan2WomenRegion();
@@ -556,46 +556,42 @@ function processPresidentAdmBoard() {
       title: null,
       legend: { enabled: false },
       credits: { enabled: false },
-      tooltip: { enabled: false },
       exporting: { enabled: false },
-      
-      // the value axis
-      xAxis: {
-        visible: true,
-      },
-      yAxis: {
-        title: { enabled: false },
-      },
-      plotOptions: {
-        series: {
-          pointWidth: 80,
-        },
-      },
     };
 
-    if (document.getElementById("president-adm-chart")) {
-      const chart = Highcharts.chart(
-        "president-adm-chart",
-        Highcharts.merge(chartOptions, {
-          yAxis: {
-            labels: {
-              style: {
-                color: 'white'
-              },
-            },
+    const chart = Highcharts.chart(
+      "president-adm-chart",
+      Highcharts.merge(chartOptions, {
+        yAxis: {
+          min: 0,
+          max: 100,
+          labels: {
+            style: { color: 'white' }
           },
-          series: [
-            {
-              keys: ['name', 'y', 'label'],
-              data: [
-                ['Homens', 20, 'Homens', 20],
-                ['Mulheres', 10, 'Mulheres', 10],
-              ],
-            },
-          ],
-        })
-      );
-    }
+        },
+        xAxis: {
+          title: null,
+          labels: {
+            style: { color: 'white' }
+          },
+          categories: ["Homens", "Mulheres"]
+        },
+        tooltip: {
+          formatter: function() {
+            return `${this.point.category}: <b>${numberToDecimalsDigits(this.point.y, 2)} %</b>`
+          }
+        },
+        series: [
+          {
+            keys: ['name', 'y', 'label'],
+            data: [
+              ['Homens', 93.73, 'Homens'],
+              ['Mulheres', 6.27, 'Mulheres'],
+            ],
+          },
+        ],
+      })
+    );
   }
 
   d3.blob(jsonUrls.president_adm_board).then(processBlob);
