@@ -115,17 +115,10 @@ const app = new Vue({
     this.processTWHL();
     this.processStandardDeviation();
     this.processSharpeIndex();
-    // this.processConvexity();
-    // this.processDuration();
-    // this.processModifiedDuration();
-    // this.processYieldToMaturity();
     this.processAnualReturn();
     this.processTurnOverLTM();
-    // this.processIndexExposition();
     this.processTicksNumber();
-    // this.processRepactuationMedia();
     this.processPeriodicsReturn();
-    // this.processDueDateExposition();
     this.processMonthlyReturn();
   },
 });
@@ -430,66 +423,6 @@ function processSharpeIndex() {
   d3.blob(csvsUrls.sharpeIndex).then(processBlob);
 }
 
-function processSharpeIndex() {
-  const processFile = (rows) => (this.sharpeIndex = rows);
-
-  const processBlob = async (blob) => {
-    const text = await blob.text();
-    const rows = csvToJSON(text);
-    processFile(rows)
-  }
-
-  d3.blob(csvsUrls.sharpeIndex).then(processBlob);
-}
-
-function processConvexity() {
-  const processFile = (rows) => (this.convexity = rows[rows.length - 1]);
-
-  const processBlob = async (blob) => {
-    const text = await blob.text();
-    const rows = csvToJSON(text);
-    processFile(rows)
-  }
-
-  d3.blob(csvsUrls.convexity).then(processBlob);
-}
-
-function processDuration() {
-  const processFile = (rows) => (this.duration = rows[rows.length - 1]);
-
-  const processBlob = async (blob) => {
-    const text = await blob.text();
-    const rows = csvToJSON(text);
-    processFile(rows)
-  }
-
-  d3.blob(csvsUrls.duration).then(processBlob);
-}
-
-function processModifiedDuration() {
-  const processFile = (rows) => (this.modifiedDuration = rows[rows.length - 1]);
-
-  const processBlob = async (blob) => {
-    const text = await blob.text();
-    const rows = csvToJSON(text);
-    processFile(rows)
-  }
-
-  d3.blob(csvsUrls.modifiedDuration).then(processBlob);
-}
-
-function processYieldToMaturity() {
-  const processFile = (rows) => (this.yieldToMaturity = rows[rows.length - 1]);
-
-  const processBlob = async (blob) => {
-    const text = await blob.text();
-    const rows = csvToJSON(text);
-    processFile(rows)
-  }
-
-  d3.blob(csvsUrls.yieldToMaturity).then(processBlob);
-}
-
 function processAnualReturn() {
   const processFile = (rows) => (this.anualReturn = rows.sort((a,b) => desc(a, b, "Ano do retorno")));
   
@@ -518,31 +451,6 @@ function processTurnOverLTM() {
   d3.blob(csvsUrls.turnOverLTM).then(processBlob);
 }
 
-function processIndexExposition() {
-  const processFile = (rows) => {
-    let highestDate = "1900-01-01";
-    const data = rows.filter((row) => {
-      highestDate =
-        row["Data de referência"] > highestDate
-          ? row["Data de referência"]
-          : highestDate;
-      return !/E-/gi.test(row["Exposição"]);
-    });
-
-    this.indexExposition = data.filter(
-      (data) => data["Data de referência"] == highestDate
-    );
-  };
-
-  const processBlob = async (blob) => {
-    const text = await blob.text();
-    const rows = csvToJSON(text);
-    processFile(rows)
-  }
-
-  d3.blob(csvsUrls.indexExposition).then(processBlob);
-}
-
 function processTicksNumber() {
   const processFile = (rows) => {
     const sortedData = multiSort(rows, { "Data de referência": "desc" });
@@ -558,21 +466,6 @@ function processTicksNumber() {
   d3.blob(csvsUrls.ticksNumber).then(processBlob);
 }
 
-function processRepactuationMedia() {
-  const processFile = (rows) => {
-    const sortedData = multiSort(rows, { "Data de referência": "desc" });
-    this.repactuationMedia = sortedData[0];
-  };
-
-  const processBlob = async (blob) => {
-    const text = await blob.text();
-    const rows = csvToJSON(text);
-    processFile(rows)
-  }
-
-  d3.blob(csvsUrls.repactuationMedia).then(processBlob);
-}
-
 function processPeriodicsReturn() {
   const processFile = (rows) => (this.periodicsReturn = rows);
 
@@ -583,74 +476,6 @@ function processPeriodicsReturn() {
   }
 
   d3.blob(csvsUrls.periodicsReturn).then(processBlob);
-}
-
-function processDueDateExposition() {
-  const processFile = (rows) => {
-    if (rows.length == 0) return;
-
-    const highestDate = rows[rows.length - 1]["Data de referência"];
-    const filteredData = rows.filter(
-      (data) => data["Data de referência"] === highestDate
-    );
-
-    this.dueDateExposition = filteredData;
-
-    const trace = {
-      name: "Brands",
-      innerSize: '55%',
-      colorByPoint: true,
-      data: filteredData.map((data) => ({
-        name: data["Prazo de vencimento"],
-        y: parseFloat(data['Exposição']),
-      })),
-    };
-
-    if (document.getElementById("due-date-chart")) {
-      const topTenChart = Highcharts.chart("due-date-chart", {
-        chart: {
-          type: "pie",
-          width: window.innerWidth / 4,
-          height: window.innerWidth / 4
-        },
-        series: [trace],
-        exporting: { enabled: false },
-        title: { text: "" },
-        legend: {
-          align: "right",
-          layout: "vertical",
-          verticalAlign: "middle",
-        },
-        plotOptions: {
-          pie: {
-            cursor: "pointer",
-            showInLegend: true,
-            allowPointSelect: false,
-            dataLabels: { enabled: false },
-          },
-        },
-        tooltip: {
-          formatter: function () {
-            return (
-              "<b>" + this.key + "</b>" +
-              "<br>" +
-              "<span>Exposição: </span><b>" +
-              numberToPercentalDecimalsDigits(this.y, 2) +
-              "% </b>"
-            );
-          },
-        },
-      });
-    }
-  };
-
-  const processBlob = async (blob) => {
-    const text = await blob.text();
-    const rows = csvToJSON(text);
-    processFile(rows)
-  }
-
-  d3.blob(csvsUrls.dueDateExposition).then(processBlob);
 }
 
 function processMonthlyReturn() {
