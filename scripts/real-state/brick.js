@@ -160,6 +160,7 @@ function processTickersWithHighRelevance() {
         height: 500 * topTen.length / 10,
       },
       series: [trace],
+      credits: { enabled: false },
       exporting: { enabled: false },
       legend: { enabled: false },
       tooltip: { enabled: false },
@@ -223,6 +224,7 @@ function processQuotes() {
         },
         series: [trace],
         scrollbar: { enabled: true },
+        credits: { enabled: false },
         exporting: { enabled: false },
         navigator: {
           series: [
