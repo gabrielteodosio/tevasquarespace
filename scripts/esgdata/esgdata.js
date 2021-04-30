@@ -336,16 +336,136 @@ function processCompaniesDistributionNumberWomenBoards() {
     );
   };
 
+  const renderChart3 = (data) => {
+    const prefix = "% de empresas com";
+    const suffixPlural = "mulheres em conselhos de administracao";
+    const suffixSing = "mulher em conselhos de administracao";
+
+    let categories = [];
+    const filtered = Object.entries(data).reduce((acc, cur) => {
+      const [key, val] = cur;
+
+      if (categories?.length === 0) {
+        categories = [...Object.keys(cur[1])];
+      }
+
+      if (
+        key.includes(prefix) &&
+        (key.includes(suffixPlural) || key.includes(suffixSing))
+      ) {
+        console.log(key);
+        return [...acc, Object.values(val)];
+      }
+
+      return [...acc];
+    }, []);
+
+    if (document.getElementById("distribution-number-women-chart3")) {
+      const chartOptions = {
+        chart: { backgroundColor: "transparent" },
+        credits: { enabled: false },
+        exporting: { enabled: false },
+        title: null,
+        legend: {
+          enabled: true,
+          labelFormat: "{name}",
+          itemStyle: { color: "#fff" },
+        },
+        xAxis: {
+          labels: {
+            style: { color: "white" },
+          },
+        },
+        yAxis: {
+          labels: {
+            style: { color: "white" },
+          },
+        },
+        plotOptions: {
+          series: {
+            borderWidth: 0,
+          },
+        },
+      };
+
+      const trace1 = {
+        name: "0",
+        label: "Empresas com 0 Mulheres em Conselhos de Administração",
+        dataLabels: { enabled: false },
+        data: filtered[0],
+      };
+      const trace2 = {
+        name: "1",
+        label: "Empresas com 1 Mulheres em Conselhos de Administração",
+        dataLabels: { enabled: false },
+        data: filtered[1],
+      };
+      const trace3 = {
+        name: "2",
+        label: "Empresas com 2 Mulheres em Conselhos de Administração",
+        dataLabels: { enabled: false },
+        data: filtered[2],
+      };
+      const trace4 = {
+        name: "3",
+        label: "Empresas com 3 Mulheres em Conselhos de Administração",
+        dataLabels: { enabled: false },
+        data: filtered[3],
+      };
+      const trace5 = {
+        name: "4+",
+        label: "Empresas com mais de 3 Mulheres em Conselhos de Administração",
+        dataLabels: { enabled: false },
+        data: filtered[4],
+      };
+
+      console.log({ filtered, categories, trace1 });
+
+      const lineChart = Highcharts.chart(
+        "distribution-number-women-chart3",
+        Highcharts.merge(chartOptions, {
+          chart: {
+            type: "line",
+            width: 500,
+          },
+          series: [trace1, trace2, trace3, trace4, trace5],
+          xAxis: { categories },
+          yAxis: {
+            min: 0,
+            max: 100,
+            title: null,
+            gridLineColor: "transparent",
+          },
+          tooltip: {
+            formatter: function () {
+              return (
+                "<b>" +
+                this.point.category +
+                "</b><br>" +
+                this.series.userOptions.label +
+                ": <b>" +
+                numberToDecimalsDigits(this.point.y, 2) +
+                " %</b>"
+              );
+            },
+          },
+        })
+      );
+    }
+  };
+
   const processBlob = async (blob) => {
     const text = await blob.text();
     const data = JSON.parse(text);
 
     renderChart(data);
     renderChart2(data);
+    renderChart3(data);
   };
 
-  d3.blob(jsonUrls.companies_distribution_number_women_boards)
-    .then(processBlob);
+  d3.blob(jsonUrls.companies_distribution_number_women_boards).then(
+    processBlob
+  );
 }
 
 function processCompaniesWithMoreThan2WomenRegion() {
@@ -687,8 +807,8 @@ function processGenderNumbersBoards() {
             item: { borderWidth: 0 },
           },
           legend: {
-            align: 'right',
-            verticalAlign: 'middle',
+            align: "right",
+            verticalAlign: "middle",
           },
           tooltip: {
             formatter: function () {
@@ -715,8 +835,8 @@ function processGenderNumbersBoards() {
             gridLineColor: "transparent",
           },
           legend: {
-            align: 'right',
-            verticalAlign: 'middle',
+            align: "right",
+            verticalAlign: "middle",
           },
           tooltip: {
             formatter: function () {
@@ -734,10 +854,7 @@ function processGenderNumbersBoards() {
   };
 
   const renderCharts5a8 = (data) => {
-    const jsonKeys = [
-      "% de homens em",
-      "% de mulheres em",
-    ];
+    const jsonKeys = ["% de homens em", "% de mulheres em"];
 
     let categories = [];
     const filtered = Object.entries(data).reduce(
@@ -748,7 +865,7 @@ function processGenderNumbersBoards() {
           categories = Object.keys(cur[1]);
         }
 
-        let aux = { ...acc }
+        let aux = { ...acc };
 
         for (let jk of jsonKeys) {
           if (key.includes(jk) && !key.includes("Variacao")) {
@@ -844,7 +961,7 @@ function processGenderNumbersBoards() {
             formatter: function () {
               return (
                 this.series.userOptions.label +
-                " - <b>"+
+                " - <b>" +
                 this.point.category +
                 "</b><br>" +
                 this.series.name +
@@ -880,7 +997,7 @@ function processGenderNumbersBoards() {
             formatter: function () {
               return (
                 this.series.userOptions.label +
-                " - <b>"+
+                " - <b>" +
                 this.point.category +
                 "</b><br>" +
                 this.series.name +
@@ -916,7 +1033,7 @@ function processGenderNumbersBoards() {
             formatter: function () {
               return (
                 this.series.userOptions.label +
-                " - <b>"+
+                " - <b>" +
                 this.point.category +
                 "</b><br>" +
                 this.series.name +
@@ -952,7 +1069,7 @@ function processGenderNumbersBoards() {
             formatter: function () {
               return (
                 this.series.userOptions.label +
-                " - <b>"+
+                " - <b>" +
                 this.point.category +
                 "</b><br>" +
                 this.series.name +
@@ -965,7 +1082,7 @@ function processGenderNumbersBoards() {
         })
       );
     }
-  }
+  };
 
   const processBlob = async (blob) => {
     const text = await blob.text();
@@ -1157,10 +1274,12 @@ function processCompaniesScore() {
       },
       tooltip: {
         formatter: function () {
-          return `${this.point.label}: <strong>${numberToDecimalsDigits(
-            this.y,
-            2
-          )}</strong>`;
+          return (
+            this.point.label +
+            ": <strong>" +
+            numberToDecimalsDigits(this.y, 2) +
+            "</strong>"
+          );
         },
       },
     };
