@@ -21,8 +21,11 @@ const host = "https://storage.googleapis.com/teva-indices-public/";
 
 const jsonUrls = {
   companies_score: `${host}esg-data/score/companies_score.json`,
+  ceo_in_adm_board: `${host}esg-data/study/ceo_in_adm_board.json`,
   president_adm_board: `${host}esg-data/study/president_adm_board.json`,
   companies_distribution_number_women_boards: `${host}esg-data/study/companies_distribution_number_women_boards.json`,
+  adm_board_mandates: `${host}esg-data/study/adm_board_mandates.json`,
+  age_distribution_adm_board: `${host}esg-data/study/age_distribution_adm_board.json`,
   companies_with_more_than_2women:
     "https://combinatronics.com/gabrielteodosio/tevasquarespace/master/json/esgdata/companies_with_more_than_2women.json",
   companies_with_more_than_2women_region:
@@ -61,6 +64,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
   processPresidentAdmBoard();
   processGenderNumbersBoards();
   processCompaniesDistributionNumberWomenBoards();
+  processAgeDistributionAdmBoard();
+  processAdmBoardMandates();
 
   // processCompaniesWithMoreThan2Women();
   // processCompaniesWithMoreThan2WomenRegion();
@@ -166,7 +171,6 @@ function processCompaniesWithMoreThan2Women() {
 
       return aux;
     }, {});
-    console.log({ cols, data });
 
     this.companiesWithMoreThan2Women = data;
   };
@@ -353,7 +357,6 @@ function processCompaniesDistributionNumberWomenBoards() {
         key.includes(prefix) &&
         (key.includes(suffixPlural) || key.includes(suffixSing))
       ) {
-        console.log(key);
         return [...acc, Object.values(val)];
       }
 
@@ -419,8 +422,6 @@ function processCompaniesDistributionNumberWomenBoards() {
         data: filtered[4],
       };
 
-      console.log({ filtered, categories, trace1 });
-
       const lineChart = Highcharts.chart(
         "distribution-number-women-chart3",
         Highcharts.merge(chartOptions, {
@@ -463,9 +464,8 @@ function processCompaniesDistributionNumberWomenBoards() {
     renderChart3(data);
   };
 
-  d3.blob(jsonUrls.companies_distribution_number_women_boards).then(
-    processBlob
-  );
+  d3.blob(jsonUrls.companies_distribution_number_women_boards)
+    .then(processBlob);
 }
 
 function processCompaniesWithMoreThan2WomenRegion() {
@@ -854,6 +854,11 @@ function processGenderNumbersBoards() {
   };
 
   const renderCharts5a8 = (data) => {
+    const colors = {
+      primary: "#7cb5ec",
+      secondary: "#434348",
+    };
+
     const jsonKeys = ["% de homens em", "% de mulheres em"];
 
     let categories = [];
@@ -891,12 +896,14 @@ function processGenderNumbersBoards() {
       name: "Homens",
       label: "Conselhos de Administração",
       dataLabels: { enabled: false },
+      color: colors.secondary,
       data: Object.values(filtered.homens[0])[0],
     };
     const PercentTraceWomenAdm = {
       name: "Mulheres",
       label: "Conselhos de Administração",
       dataLabels: { enabled: false },
+      color: colors.primary,
       data: Object.values(filtered.mulheres[0])[0],
     };
 
@@ -904,12 +911,14 @@ function processGenderNumbersBoards() {
       name: "Homens",
       label: "Conselhos Fiscais",
       dataLabels: { enabled: false },
+      color: colors.secondary,
       data: Object.values(filtered.homens[1])[0],
     };
     const PercentTraceWomenFiscais = {
       name: "Mulheres",
       label: "Conselhos Fiscais",
       dataLabels: { enabled: false },
+      color: colors.primary,
       data: Object.values(filtered.mulheres[1])[0],
     };
 
@@ -917,12 +926,14 @@ function processGenderNumbersBoards() {
       name: "Homens",
       label: "Diretorias",
       dataLabels: { enabled: false },
+      color: colors.secondary,
       data: Object.values(filtered.homens[2])[0],
     };
     const PercentTraceWomenDiretorias = {
       name: "Mulheres",
       label: "Diretorias",
       dataLabels: { enabled: false },
+      color: colors.primary,
       data: Object.values(filtered.mulheres[2])[0],
     };
 
@@ -930,12 +941,14 @@ function processGenderNumbersBoards() {
       name: "Homens",
       label: "Comitês de Auditoria",
       dataLabels: { enabled: false },
+      color: colors.secondary,
       data: Object.values(filtered.homens[2])[0],
     };
     const PercentTraceWomenComites = {
       name: "Mulheres",
       label: "Comitês de Auditoria",
       dataLabels: { enabled: false },
+      color: colors.primary,
       data: Object.values(filtered.mulheres[2])[0],
     };
 
@@ -947,9 +960,15 @@ function processGenderNumbersBoards() {
           chart: {
             type: "line",
             width: 500,
+            // height: 200,
           },
           series: [PercentTraceMenAdm, PercentTraceWomenAdm],
-          xAxis: { categories },
+          xAxis: {
+            categories,
+            labels: {
+              rotation: -90
+            },
+          },
           yAxis: {
             min: 0,
             max: 100,
@@ -983,9 +1002,15 @@ function processGenderNumbersBoards() {
           chart: {
             type: "line",
             width: 500,
+            // height: 200,
           },
           series: [PercentTraceMenFiscais, PercentTraceWomenFiscais],
-          xAxis: { categories },
+          xAxis: {
+            categories,
+            labels: {
+              rotation: -90
+            },
+          },
           yAxis: {
             min: 0,
             max: 100,
@@ -1019,9 +1044,15 @@ function processGenderNumbersBoards() {
           chart: {
             type: "line",
             width: 500,
+            // height: 200,
           },
           series: [PercentTraceMenDiretorias, PercentTraceWomenDiretorias],
-          xAxis: { categories },
+          xAxis: {
+            categories,
+            labels: {
+              rotation: -90
+            },
+          },
           yAxis: {
             min: 0,
             max: 100,
@@ -1055,9 +1086,15 @@ function processGenderNumbersBoards() {
           chart: {
             type: "line",
             width: 500,
+            // height: 200,
           },
           series: [PercentTraceMenComites, PercentTraceWomenComites],
-          xAxis: { categories },
+          xAxis: {
+            categories,
+            labels: {
+              rotation: -90
+            },
+          },
           yAxis: {
             min: 0,
             max: 100,
@@ -1178,10 +1215,12 @@ function processYearsToEquality() {
 }
 
 function processPresidentAdmBoard() {
-  const processBlob = async (blob) => {
-    const text = await blob.text();
-    const data = JSON.parse(text);
+  const colors = {
+    primary: "#7cb5ec",
+    secondary: "#434348",
+  };
 
+  const renderChart = (data) => {
     const chartOptions = {
       chart: {
         width: 500,
@@ -1238,6 +1277,169 @@ function processPresidentAdmBoard() {
         ],
       })
     );
+  }
+
+  const renderChart2 = (data) => {
+    const menKey = "% de homens nos conselhos de administracao eleitos pelos controladores";
+    const womenKey = "% de mulheres nos conselhos de administracao eleitas pelos controladores";
+
+    const keys = Object.keys(data[womenKey]);
+
+    const actualQ = [keys[keys.length - 1]];
+    const menAge = [data[menKey][actualQ[0]]];
+    const womenAge = [data[womenKey][actualQ[0]]];
+
+    const chartOptions = {
+      chart: {
+        width: 250,
+        height: 300,
+        type: "column",
+        backgroundColor: "transparent",
+      },
+      credits: { enabled: false },
+      exporting: { enabled: false },
+      title: null,
+      legend: {
+        enabled: true,
+        labelFormat: "{name}",
+        itemStyle: { color: "#fff" },
+      },
+      tooltip: {
+        formatter: function () {
+          return (
+            this.series.name +
+            ": <strong>" +
+            numberToDecimalsDigits(this.y, 0) +
+            " %</strong>"
+          );
+        },
+      },
+    };
+
+    const menTrace = {
+      name: "Homens",
+      label: "",
+      data: menAge,
+      color: colors.secondary,
+      dataLabels: { enabled: false },
+    };
+
+    const womenTrace = {
+      name: "Mulheres",
+      label: "",
+      data: womenAge,
+      color: colors.primary,
+      dataLabels: { enabled: false },
+    };
+
+    const chart = Highcharts.chart(
+      "president-adm-chart2",
+      Highcharts.merge(chartOptions, {
+        xAxis: {
+          categories: ["% Eleita pelo Controlador"],
+          labels: {
+            style: {
+              color: "white",
+            },
+          },
+        },
+        yAxis: {
+          min: 0,
+          title: null,
+          visible: false,
+        },
+        series: [menTrace, womenTrace],
+        plotOptions: {
+          series: { borderWidth: 0 },
+        },
+      })
+    );
+  }
+
+  const renderChart3 = (data) => {
+    const menKey = "% de homens presidentes de conselhos de administracao eleitos pelos controladores";
+    const womenKey = "% de mulheres presidentes de conselhos de administracao eleitas pelos controladores";
+
+    const keys = Object.keys(data[womenKey]);
+
+    const actualQ = [keys[keys.length - 1]];
+    const menAge = [data[menKey][actualQ[0]]];
+    const womenAge = [data[womenKey][actualQ[0]]];
+
+    const chartOptions = {
+      chart: {
+        width: 250,
+        height: 300,
+        type: "column",
+        backgroundColor: "transparent",
+      },
+      credits: { enabled: false },
+      exporting: { enabled: false },
+      title: null,
+      legend: {
+        enabled: true,
+        labelFormat: "{name}",
+        itemStyle: { color: "#fff" },
+      },
+      tooltip: {
+        formatter: function () {
+          return (
+            this.series.name +
+            ": <strong>" +
+            numberToDecimalsDigits(this.y, 0) +
+            " %</strong>"
+          );
+        },
+      },
+    };
+
+    const menTrace = {
+      name: "Homens",
+      label: "",
+      data: menAge,
+      color: colors.secondary,
+      dataLabels: { enabled: false },
+    };
+
+    const womenTrace = {
+      name: "Mulheres",
+      label: "",
+      data: womenAge,
+      color: colors.primary,
+      dataLabels: { enabled: false },
+    };
+
+    const chart = Highcharts.chart(
+      "president-adm-chart3",
+      Highcharts.merge(chartOptions, {
+        xAxis: {
+          categories: ["% Presidência do Conselho eleito pelo controlador"],
+          labels: {
+            style: {
+              color: "white",
+            },
+          },
+        },
+        yAxis: {
+          min: 0,
+          title: null,
+          visible: false,
+        },
+        series: [menTrace, womenTrace],
+        plotOptions: {
+          series: { borderWidth: 0 },
+        },
+      })
+    );
+  }
+
+  const processBlob = async (blob) => {
+    const text = await blob.text();
+    const data = JSON.parse(text);
+
+    renderChart(data);
+    renderChart2(data);
+    renderChart3(data);
   };
 
   d3.blob(jsonUrls.president_adm_board).then(processBlob);
@@ -1316,6 +1518,270 @@ function processCompaniesScore() {
   };
 
   d3.blob(jsonUrls.companies_score).then(processBlob);
+}
+
+function processAgeDistributionAdmBoard() {
+  const colors = {
+    primary: "#7cb5ec",
+    secondary: "#434348",
+  };
+
+  const renderChart = (data) => {
+    const menKey = "Idade media dos homens no conselho de administracao";
+    const womenKey = "Idade media das mulheres no conselho de administracao";
+
+    const keys = Object.keys(data[womenKey]);
+
+    const actualQ = [keys[keys.length - 1]];
+    const menAge = [data[menKey][actualQ[0]]];
+    const womenAge = [data[womenKey][actualQ[0]]];
+
+    const chartOptions = {
+      chart: {
+        width: 250,
+        height: 300,
+        type: "column",
+        backgroundColor: "transparent",
+      },
+      credits: { enabled: false },
+      exporting: { enabled: false },
+      title: null,
+      legend: {
+        enabled: true,
+        labelFormat: "{name}",
+        itemStyle: { color: "#fff" },
+      },
+      tooltip: {
+        formatter: function () {
+          return (
+            this.series.name +
+            ": <strong>" +
+            numberToDecimalsDigits(this.y, 0) +
+            "</strong>"
+          );
+        },
+      },
+    };
+
+    const menTrace = {
+      name: "Homens",
+      label: "",
+      data: menAge,
+      color: colors.secondary,
+      dataLabels: { enabled: false },
+    };
+
+    const womenTrace = {
+      name: "Mulheres",
+      label: "",
+      data: womenAge,
+      color: colors.primary,
+      dataLabels: { enabled: false },
+    };
+
+    const chart = Highcharts.chart(
+      "age-distribution-chart",
+      Highcharts.merge(chartOptions, {
+        xAxis: {
+          categories: ["Idade Média"],
+          labels: {
+            style: {
+              color: "white",
+            },
+          },
+        },
+        yAxis: {
+          min: 0,
+          title: null,
+          visible: false,
+        },
+        series: [menTrace, womenTrace],
+        plotOptions: {
+          series: { borderWidth: 0 },
+        },
+      })
+    );
+  }
+
+  const processBlob = async (blob) => {
+    const text = await blob.text();
+    const data = JSON.parse(text);
+
+    renderChart(data);
+  };
+
+  d3.blob(jsonUrls.age_distribution_adm_board).then(processBlob);
+}
+
+function processAdmBoardMandates() {
+  const colors = {
+    primary: "#7cb5ec",
+    secondary: "#434348",
+  };
+
+  const renderChart = (data) => {
+    const menKey = "% de homens no primeiro mandato";
+    const womenKey = "% de mulheres no primeiro mandato";
+
+    const keys = Object.keys(data[womenKey]);
+
+    const actualQ = [keys[keys.length - 1]];
+    const menAge = [data[menKey][actualQ[0]]];
+    const womenAge = [data[womenKey][actualQ[0]]];
+
+    const chartOptions = {
+      chart: {
+        width: 250,
+        height: 300,
+        type: "column",
+        backgroundColor: "transparent",
+      },
+      credits: { enabled: false },
+      exporting: { enabled: false },
+      title: null,
+      legend: {
+        enabled: true,
+        labelFormat: "{name}",
+        itemStyle: { color: "#fff" },
+      },
+      tooltip: {
+        formatter: function () {
+          return (
+            this.series.name +
+            ": <strong>" +
+            numberToDecimalsDigits(this.y, 0) +
+            " %</strong>"
+          );
+        },
+      },
+    };
+
+    const menTrace = {
+      name: "Homens",
+      label: "",
+      data: menAge,
+      color: colors.secondary,
+      dataLabels: { enabled: false },
+    };
+
+    const womenTrace = {
+      name: "Mulheres",
+      label: "",
+      data: womenAge,
+      color: colors.primary,
+      dataLabels: { enabled: false },
+    };
+
+    const chart = Highcharts.chart(
+      "adm-border-chart",
+      Highcharts.merge(chartOptions, {
+        xAxis: {
+          categories: ["% em Primeiro Mandato"],
+          labels: {
+            style: {
+              color: "white",
+            },
+          },
+        },
+        yAxis: {
+          min: 0,
+          title: null,
+          visible: false,
+        },
+        series: [menTrace, womenTrace],
+        plotOptions: {
+          series: { borderWidth: 0 },
+        },
+      })
+    );
+  }
+
+  const renderChart2 = (data) => {
+    const menKey = "N medio de mandatos dos homens";
+    const womenKey = "N medio de mandatos das mulheres";
+
+    const keys = Object.keys(data[womenKey]);
+
+    const actualQ = [keys[keys.length - 1]];
+    const menAge = [data[menKey][actualQ[0]]];
+    const womenAge = [data[womenKey][actualQ[0]]];
+
+    const chartOptions = {
+      chart: {
+        width: 250,
+        height: 300,
+        type: "column",
+        backgroundColor: "transparent",
+      },
+      credits: { enabled: false },
+      exporting: { enabled: false },
+      title: null,
+      legend: {
+        enabled: true,
+        labelFormat: "{name}",
+        itemStyle: { color: "#fff" },
+      },
+      tooltip: {
+        formatter: function () {
+          return (
+            this.series.name +
+            ": <strong>" +
+            numberToDecimalsDigits(this.y, 0) +
+            "</strong>"
+          );
+        },
+      },
+    };
+
+    const menTrace = {
+      name: "Homens",
+      label: "",
+      data: menAge,
+      color: colors.secondary,
+      dataLabels: { enabled: false },
+    };
+
+    const womenTrace = {
+      name: "Mulheres",
+      label: "",
+      data: womenAge,
+      color: colors.primary,
+      dataLabels: { enabled: false },
+    };
+
+    const chart = Highcharts.chart(
+      "adm-border-chart2",
+      Highcharts.merge(chartOptions, {
+        xAxis: {
+          categories: ["Número Médio de Mandatos"],
+          labels: {
+            style: {
+              color: "white",
+            },
+          },
+        },
+        yAxis: {
+          min: 0,
+          title: null,
+          visible: false,
+        },
+        series: [menTrace, womenTrace],
+        plotOptions: {
+          series: { borderWidth: 0 },
+        },
+      })
+    );
+  }
+
+  const processBlob = async (blob) => {
+    const text = await blob.text();
+    const data = JSON.parse(text);
+
+    renderChart(data);
+    renderChart2(data);
+  };
+
+  d3.blob(jsonUrls.adm_board_mandates).then(processBlob);
 }
 
 // utility functions
