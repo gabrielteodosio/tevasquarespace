@@ -1,10 +1,10 @@
-document.getElementById("tesouro-indices-filter-text").addEventListener(
+document.getElementById("tesouro-filter-text").addEventListener(
   "keyup",
   debounce(
     (e) => {
       const filter = e.target.value.toUpperCase();
       const list = document.getElementById("tesouro-indices-list").children;
-      let familyFilter = document.getElementById("family-filter").value.toUpperCase();
+      let familyFilter = document.getElementById("tesouro-family-filter").value.toUpperCase();
 
       for (let i = 0; i < list.length; i++) {
         let name = list[i]
@@ -26,7 +26,7 @@ document.getElementById("tesouro-indices-filter-text").addEventListener(
 document.getElementById("tesouro-family-filter").addEventListener("change", (e) => {
   const filter = e.target.value.toUpperCase();
   const list = document.getElementById("tesouro-indices-list").children;
-  const textFilter = document.getElementById("indices-filter-text").value.toUpperCase();
+  const textFilter = document.getElementById("tesouro-filter-text").value.toUpperCase();
 
   if (filter === "ALL") {
     for (let i = 0; i < list.length; i++) {
