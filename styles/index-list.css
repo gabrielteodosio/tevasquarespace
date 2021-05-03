@@ -132,7 +132,7 @@
   transform: translate(0.25rem, -65%) scale(0.8);
 }
 
-#indices-filter-text {
+.filter-text {
   outline: none !important;
 }
 
@@ -143,7 +143,7 @@
   /* background-color: orangered; */
 }
 
-#family-filter {
+.family-filter {
   background-color: transparent;
   padding: 12px;
   border-radius: 5px;
