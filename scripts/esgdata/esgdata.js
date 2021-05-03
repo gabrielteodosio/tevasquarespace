@@ -1261,10 +1261,10 @@ function processPresidentAdmBoard() {
         },
         series: [
           {
-            keys: ["name", "y", "label"],
+            keys: ["name", "y", "label", "color"],
             data: [
-              ["Homens", 93.73, "Homens"],
-              ["Mulheres", 6.27, "Mulheres"],
+              ["Homens", 93.73, "Homens", colors.secondary],
+              ["Mulheres", 6.27, "Mulheres", colors.primary],
             ],
           },
         ],
@@ -1361,23 +1361,22 @@ function processPresidentAdmBoard() {
 
     const chartOptions = {
       chart: {
-        width: 250,
-        height: 300,
-        type: "column",
+        width: 500,
+        type: "bar",
         backgroundColor: "transparent",
       },
       credits: { enabled: false },
       exporting: { enabled: false },
       title: null,
       legend: {
-        enabled: true,
+        enabled: false,
         labelFormat: "{name}",
         itemStyle: { color: "#fff" },
       },
       tooltip: {
         formatter: function () {
           return (
-            this.series.name +
+            this.point.label +
             ": <strong>" +
             numberToDecimalsDigits(this.y, 0) +
             " %</strong>"
@@ -1389,8 +1388,7 @@ function processPresidentAdmBoard() {
     const menTrace = {
       name: "Homens",
       label: "",
-      data: menAge,
-      color: colors.secondary,
+      data: [...menAge, ...womenAge],
       dataLabels: { enabled: false },
     };
 
@@ -1398,15 +1396,16 @@ function processPresidentAdmBoard() {
       name: "Mulheres",
       label: "",
       data: womenAge,
-      color: colors.primary,
       dataLabels: { enabled: false },
     };
+
+    const categories = ["Homens", "Mulheres"];
 
     const chart = Highcharts.chart(
       "president-adm-chart3",
       Highcharts.merge(chartOptions, {
         xAxis: {
-          categories: ["% Presidência do Conselho eleito pelo controlador"],
+          categories,
           labels: {
             style: {
               color: "white",
@@ -1416,9 +1415,19 @@ function processPresidentAdmBoard() {
         yAxis: {
           min: 0,
           title: null,
-          visible: false,
+          visible: true,
+          gridLineColor: "transparent",
         },
-        series: [menTrace, womenTrace],
+        series: [{
+          keys: ["name", "y", "label", "color"],
+          data: categories.map((category, idx) => {
+            if (idx === 0) {
+            return ["Homens", ...menAge, "Homens", colors.secondary]
+            }
+
+            return ["Mulheres", ...womenAge, "Mulheres", colors.primary]
+          }),
+        },],
         plotOptions: {
           series: { borderWidth: 0 },
         },
