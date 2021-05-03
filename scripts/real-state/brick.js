@@ -194,6 +194,11 @@ function processQuotes() {
 
     let lowestIndex = Number.MAX_VALUE;
 
+    const latestData = multiSort(rows, { "Data de referência": "desc" })[0];
+
+    this.quote = latestData["Cotação do índice"];
+    this.dailyReturn = latestData["Retorno diário"];
+
     const trace = {
       lineWidth: 1,
       showInNavigator: true,
