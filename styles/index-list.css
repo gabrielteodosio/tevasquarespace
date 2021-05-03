@@ -19,6 +19,7 @@
 .indices-ul {
   margin: 0;
   padding: 0;
+  width: 100%;
 }
 
 .index-list-container {
@@ -93,17 +94,16 @@
 
   padding: calc(var(--size-bezel) * 0.75) calc(var(--size-bezel) * 0.5);
   margin: calc(var(--size-bezel) * 0.75 + 3px) calc(var(--size-bezel) * 0.5);
-  
+
   background: var(--color-background);
-  
+
   white-space: nowrap;
   font-weight: normal;
   line-height: 1.2;
-  
+
   transform: translate(0, 0);
   transform-origin: 0 0;
   transition: transform 120ms ease-in;
-  
 }
 
 .input__field {
@@ -150,4 +150,13 @@
   margin-right: 10px;
   outline: none !important;
   border: 1px solid var(--color-dark);
+}
+
+.tab-content.active-tab {
+  flex-direction: column;
+  flex: 1 1 100%;
+}
+
+.tab {
+  margin-bottom: 5px;
 }
