@@ -425,10 +425,7 @@ function processCompaniesDistributionNumberWomenBoards() {
       const lineChart = Highcharts.chart(
         "distribution-number-women-chart3",
         Highcharts.merge(chartOptions, {
-          chart: {
-            type: "line",
-            width: 500,
-          },
+          chart: { type: "line" },
           series: [trace1, trace2, trace3, trace4, trace5],
           xAxis: { categories },
           yAxis: {
