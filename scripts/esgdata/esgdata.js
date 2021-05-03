@@ -960,7 +960,7 @@ function processGenderNumbersBoards() {
           chart: {
             type: "line",
             width: 500,
-            // height: 200,
+            height: 250,
           },
           series: [PercentTraceMenAdm, PercentTraceWomenAdm],
           xAxis: {
@@ -1002,7 +1002,7 @@ function processGenderNumbersBoards() {
           chart: {
             type: "line",
             width: 500,
-            // height: 200,
+            height: 250,
           },
           series: [PercentTraceMenFiscais, PercentTraceWomenFiscais],
           xAxis: {
@@ -1044,7 +1044,7 @@ function processGenderNumbersBoards() {
           chart: {
             type: "line",
             width: 500,
-            // height: 200,
+            height: 250,
           },
           series: [PercentTraceMenDiretorias, PercentTraceWomenDiretorias],
           xAxis: {
@@ -1086,7 +1086,7 @@ function processGenderNumbersBoards() {
           chart: {
             type: "line",
             width: 500,
-            // height: 200,
+            height: 250,
           },
           series: [PercentTraceMenComites, PercentTraceWomenComites],
           xAxis: {
