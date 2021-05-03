@@ -959,7 +959,6 @@ function processGenderNumbersBoards() {
         Highcharts.merge(chartOptions, {
           chart: {
             type: "line",
-            width: 500,
             height: 250,
           },
           series: [PercentTraceMenAdm, PercentTraceWomenAdm],
@@ -1001,7 +1000,6 @@ function processGenderNumbersBoards() {
         Highcharts.merge(chartOptions, {
           chart: {
             type: "line",
-            width: 500,
             height: 250,
           },
           series: [PercentTraceMenFiscais, PercentTraceWomenFiscais],
@@ -1043,7 +1041,6 @@ function processGenderNumbersBoards() {
         Highcharts.merge(chartOptions, {
           chart: {
             type: "line",
-            width: 500,
             height: 250,
           },
           series: [PercentTraceMenDiretorias, PercentTraceWomenDiretorias],
@@ -1085,7 +1082,6 @@ function processGenderNumbersBoards() {
         Highcharts.merge(chartOptions, {
           chart: {
             type: "line",
-            width: 500,
             height: 250,
           },
           series: [PercentTraceMenComites, PercentTraceWomenComites],
