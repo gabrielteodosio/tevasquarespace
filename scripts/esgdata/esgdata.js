@@ -1216,7 +1216,6 @@ function processPresidentAdmBoard() {
   const renderChart = (data) => {
     const chartOptions = {
       chart: {
-        width: 500,
         type: "bar",
         backgroundColor: "transparent",
       },
@@ -1361,7 +1360,6 @@ function processPresidentAdmBoard() {
 
     const chartOptions = {
       chart: {
-        width: 500,
         type: "bar",
         backgroundColor: "transparent",
       },
