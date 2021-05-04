@@ -217,7 +217,7 @@ function processQuotes() {
       legend: {
         enabled: true,
         align: "center",
-        layout: "vertical",
+        layout: "horizontal",
         verticalAlign: "top",
       },
       tooltip: {
