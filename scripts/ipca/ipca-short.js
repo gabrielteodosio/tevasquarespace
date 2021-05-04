@@ -72,28 +72,28 @@ Vue.config.devtools = true;
 const app = new Vue({
   el: "#funds-app",
   data: () => ({
-    quote: null,
-    dailyReturn: null,
-    turnOverLTM: null,
-    loadingMetrics: true,
     topTen: [],
+    quote: null,
     duration: {},
     convexity: {},
+    anualReturn: [],
     ticksNumber: {},
-    anualReturn: [],
-    anualReturn: [],
-    sharpeIndex: [],
-    yieldToMaturity: {},
-    indexExposition: [],
+    dailyReturn: null,
+    turnOverLTM: null,
     periodicsReturn: [],
+    yieldToMaturity: {},
     modifiedDuration: {},
-    repactuationMedia: {},
+    loadingMetrics: true,
     standardDeviation: [],
+    repactuationMedia: {},
     dueDateExposition: [],
     monthlyReturn: {
       years: [],
       filteredByMonths: [],
     },
+    anualReturn: [],
+    sharpeIndex: [],
+    indexExposition: [],
     quotesChart: {
       uuid: "quotes-chart",
       traces: [],
@@ -214,11 +214,16 @@ function processQuotes() {
 
     let lowestIndex = Number.MAX_VALUE;
 
+    const latestData = multiSort(rows, { "Data de referência": "desc" })[0];
+
+    this.quote = latestData["Cotação do índice"];
+    this.dailyReturn = latestData["Retorno diário"];
+
     const trace = {
       lineWidth: 1,
       showInNavigator: true,
       marker: {
-        enabled: true,
+        enabled: false,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
       name: "Índice IPCA Curto Prazo",
@@ -243,14 +248,12 @@ function processQuotes() {
           margin: [30, 0, 30, 0],
         },
         series: [trace],
+        credits: { enabled: false },
         scrollbar: { enabled: true },
         exporting: { enabled: false },
         navigator: {
-          series: [
-            Object.assign({}, trace, {
-              marker: { enabled: false },
-            }),
-          ],
+          enabled: true,
+          series: [trace],
           xAxis: {
             labels: {
               formatter: function () {
@@ -258,7 +261,6 @@ function processQuotes() {
               },
             },
           },
-          enabled: true,
         },
         legend: {
           enabled: true,
@@ -288,24 +290,19 @@ function processQuotes() {
           },
         },
         yAxis: {
+          min: 50,
           opposite: false,
           labels: {
             formatter: function () {
               return ("" + this.value.toFixed(2)).replace(".", ",");
             },
           },
-          min: 50,
         },
         plotOptions: {
           area: {
             lineColor: Highcharts.color(colors.primary).get("rgba"),
             fillColor: {
-              linearGradient: {
-                x1: 0,
-                y1: 0,
-                x2: 0,
-                y2: 1,
-              },
+              linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
               stops: [
                 [0, Highcharts.color(colors.primary).get("rgba")],
                 [
@@ -671,15 +668,19 @@ function processMonthlyReturn() {
   const processFile = (rows) => {
     const years = Array.from(
       new Set(
-        rows.map((data) => new Date(Object.values(data)[0]).getFullYear())
+        rows.map((data) => {
+          const d = data["Mês/ano do retorno"]
+          return d.slice(d.indexOf("/") + 1);
+        })
       )
     ).sort(desc);
 
     let filteredByMonths = years.reduce((acc, cur) => {
       let dataByMonth = rows
-        .filter(
-          (data) => new Date(data["Mês/ano do retorno"]).getFullYear() == cur
-        )
+        .filter((data) => {
+          const d = data["Mês/ano do retorno"]
+          return d.slice(d.indexOf("/") + 1) == cur;
+        })
         .map((data) => data["Retorno"]);
 
       if (dataByMonth.length < 12) {
@@ -811,9 +812,9 @@ function desc(a, b, column) {
 function findYearReturnIndex(year) {
   for (let idx = 0; idx < this.anualReturn.length; idx++) {
     const ret = this.anualReturn[idx];
-    const yr = parseInt(ret["Ano do retorno"]);
+    const yr = ret["Ano do retorno"];
     
-    if (yr === year) {
+    if (yr == year) {
       return idx;
     }
   }

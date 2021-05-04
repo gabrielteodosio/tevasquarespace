@@ -228,16 +228,10 @@ function processQuotes() {
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
       name: "Índice IPCA Longo Prazo",
-      data: rows.map((row) => {
-        if (lowestIndex > parseFloat(row[yAxis])) {
-          lowestIndex = parseFloat(row[yAxis]);
-        }
-        
-        return [
+      data: rows.map((row) => ([
           new Date(row[xAxis]).getTime(),
           parseFloat(row[yAxis]),
-        ];
-      }),
+        ])),
     };
 
     this.quotesChart.traces = [trace];
@@ -253,6 +247,7 @@ function processQuotes() {
         scrollbar: { enabled: true },
         exporting: { enabled: false },
         navigator: {
+          enabled: true,
           series: [trace],
           xAxis: {
             labels: {
@@ -261,7 +256,6 @@ function processQuotes() {
               },
             },
           },
-          enabled: true,
         },
         legend: {
           enabled: true,
