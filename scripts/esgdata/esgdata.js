@@ -395,30 +395,35 @@ function processCompaniesDistributionNumberWomenBoards() {
         name: "0",
         label: "Empresas com 0 Mulheres em Conselhos de Administração",
         dataLabels: { enabled: false },
+        color: "#7cb5ec",
         data: filtered[0],
       };
       const trace2 = {
         name: "1",
         label: "Empresas com 1 Mulheres em Conselhos de Administração",
         dataLabels: { enabled: false },
+        color: "#90ed7d",
         data: filtered[1],
       };
       const trace3 = {
         name: "2",
         label: "Empresas com 2 Mulheres em Conselhos de Administração",
         dataLabels: { enabled: false },
+        color: "#434348",
         data: filtered[2],
       };
       const trace4 = {
         name: "3",
         label: "Empresas com 3 Mulheres em Conselhos de Administração",
         dataLabels: { enabled: false },
+        color: "#f7a35c",
         data: filtered[3],
       };
       const trace5 = {
         name: "4+",
         label: "Empresas com mais de 3 Mulheres em Conselhos de Administração",
         dataLabels: { enabled: false },
+        color: "#8085e9",
         data: filtered[4],
       };
 
@@ -1246,9 +1251,7 @@ function processPresidentAdmBoard() {
           categories: ["Homens", "Mulheres"],
         },
         plotOptions: {
-          series: {
-            borderWidth: 0,
-          },
+          series: { borderWidth: 0 },
         },
         tooltip: {
           formatter: function () {
@@ -1363,14 +1366,10 @@ function processPresidentAdmBoard() {
         type: "bar",
         backgroundColor: "transparent",
       },
+      title: null,
+      legend: { enabled: false },
       credits: { enabled: false },
       exporting: { enabled: false },
-      title: null,
-      legend: {
-        enabled: false,
-        labelFormat: "{name}",
-        itemStyle: { color: "#fff" },
-      },
       tooltip: {
         formatter: function () {
           return (
@@ -1403,18 +1402,21 @@ function processPresidentAdmBoard() {
       "president-adm-chart3",
       Highcharts.merge(chartOptions, {
         xAxis: {
+          title: null,
           categories,
+          gridLineColor: "transparent",
           labels: {
-            style: {
-              color: "white",
-            },
+            style: { color: "white" },
           },
         },
         yAxis: {
           min: 0,
+          max: 100,
           title: null,
-          visible: true,
           gridLineColor: "transparent",
+          labels: {
+            style: { color: "white" },
+          },
         },
         series: [{
           keys: ["name", "y", "label", "color"],

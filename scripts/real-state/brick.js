@@ -203,7 +203,7 @@ function processQuotes() {
       lineWidth: 1,
       showInNavigator: true,
       marker: {
-        enabled: true,
+        enabled: false,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
       name: "Índice de Fundos Imobiliários Tijolo IPCA",
@@ -232,11 +232,7 @@ function processQuotes() {
         credits: { enabled: false },
         exporting: { enabled: false },
         navigator: {
-          series: [
-            Object.assign({}, trace, {
-              marker: { enabled: false },
-            }),
-          ],
+          series: [trace],
           xAxis: {
             labels: {
               formatter: function () {

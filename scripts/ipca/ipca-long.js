@@ -73,17 +73,19 @@ const app = new Vue({
   el: "#funds-app",
   data: () => ({
     topTen: [],
-    convexity: {},
+    quote: null,
     duration: {},
-    modifiedDuration: {},
-    yieldToMaturity: {},
-    turnOverLTM: null,
-    ticksNumber: {},
-    repactuationMedia: {},
+    convexity: {},
     anualReturn: [],
+    ticksNumber: {},
+    dailyReturn: null,
+    turnOverLTM: null,
+    periodicsReturn: [],
+    yieldToMaturity: {},
+    modifiedDuration: {},
     loadingMetrics: true,
     standardDeviation: [],
-    periodicsReturn: [],
+    repactuationMedia: {},
     dueDateExposition: [],
     monthlyReturn: {
       years: [],
@@ -178,13 +180,14 @@ function processTickersWithHighRelevance() {
         type: "bar",
         height: 500 * topTen.length / 10,
       },
+      title: null,
       series: [trace],
-      exporting: { enabled: false },
-      legend: { enabled: false },
-      tooltip: { enabled: false },
       xAxis: { visible: false },
       yAxis: { visible: false },
-      title: { text: "" },
+      legend: { enabled: false },
+      credits: { enabled: false },
+      tooltip: { enabled: false },
+      exporting: { enabled: false },
       plotOptions: {
         series: {
           groupPadding: 0,
@@ -212,11 +215,16 @@ function processQuotes() {
 
     let lowestIndex = Number.MAX_VALUE;
 
+    const latestData = multiSort(rows, { "Data de referência": "desc" })[0];
+
+    this.quote = latestData["Cotação do índice"];
+    this.dailyReturn = latestData["Retorno diário"];
+
     const trace = {
       lineWidth: 1,
       showInNavigator: true,
       marker: {
-        enabled: true,
+        enabled: false,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
       name: "Índice IPCA Longo Prazo",
@@ -241,14 +249,11 @@ function processQuotes() {
           margin: [30, 0, 30, 0],
         },
         series: [trace],
+        credits: { enabled: false },
         scrollbar: { enabled: true },
         exporting: { enabled: false },
         navigator: {
-          series: [
-            Object.assign({}, trace, {
-              marker: { enabled: false },
-            }),
-          ],
+          series: [trace],
           xAxis: {
             labels: {
               formatter: function () {
@@ -665,15 +670,19 @@ function processMonthlyReturn() {
   const processFile = (rows) => {
     const years = Array.from(
       new Set(
-        rows.map((data) => new Date(Object.values(data)[0]).getFullYear())
+        rows.map((data) => {
+          const d = data["Mês/ano do retorno"]
+          return d.slice(d.indexOf("/") + 1);
+        })
       )
     ).sort(desc);
 
     let filteredByMonths = years.reduce((acc, cur) => {
       let dataByMonth = rows
-        .filter(
-          (data) => new Date(data["Mês/ano do retorno"]).getFullYear() == cur
-        )
+        .filter((data) => {
+          const d = data["Mês/ano do retorno"]
+          return d.slice(d.indexOf("/") + 1) == cur;
+        })
         .map((data) => data["Retorno"]);
 
       if (dataByMonth.length < 12) {
@@ -805,9 +814,9 @@ function desc(a, b, column) {
 function findYearReturnIndex(year) {
   for (let idx = 0; idx < this.anualReturn.length; idx++) {
     const ret = this.anualReturn[idx];
-    const yr = parseInt(ret["Ano do retorno"]);
+    const yr = ret["Ano do retorno"];
     
-    if (yr === year) {
+    if (yr == year) {
       return idx;
     }
   }
