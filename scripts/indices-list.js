@@ -37,7 +37,7 @@ const indices = {
       "índice de ações esg diversidade",
     ],
     setores: [
-      "índice de ações tecnologia - listadas no BR e US",
+      "índice de ações tecnologia - listadas no br e us",
       "índice de ações tecnologia",
       "índice de ações saúde",
       "índice de ações bens de consumo e varejo",
