@@ -32,10 +32,7 @@ const indices = {
   },
   acoes: {
     amplo: ["índice de ações amplo"],
-    esg: [
-      "índice de ações esg clean",
-      "índice de ações esg diversidade",
-    ],
+    esg: ["índice de ações esg clean", "índice de ações esg diversidade"],
     setores: [
       "índice de ações tecnologia - listadas no br e us",
       "índice de ações tecnologia",
@@ -58,7 +55,27 @@ const indices = {
       "índice de ações empresas públicas",
       "índice de ações exportação",
       "índice de ações inflação",
-    ]
+    ],
+  },
+  credit: {
+    corporate: [
+      "índice de debêntures corporate",
+      "índice de debêntures corporate incentivadas",
+      "índice de debêntures corporate di",
+      "índice de debêntures corporate ipca",
+      "índice de debêntures corporate esg diversidade",
+    ],
+    liquidez: [
+      "índice de debêntures liquidez",
+      "índice de debêntures liquidez incentivadas",
+      "índice de debêntures liquidez di",
+      "índice de debêntures liquidez ipca",
+      "índice de debêntures liquidez esg diversidade",
+    ],
+    "compostos ipca": [
+      "índice de debêntures corporate di composto",
+      "índice de debêntures liquidez di composto",
+    ],
   },
 };
 
@@ -214,7 +231,9 @@ document.getElementById("imobiliarios-indices-filter-text").addEventListener(
           name.indexOf(filter) >= 0 &&
           (familyFilter === "ALL"
             ? true
-            : indices.fiis[familyFilter.toLowerCase()]?.includes(name.toLowerCase()));
+            : indices.fiis[familyFilter.toLowerCase()]?.includes(
+                name.toLowerCase()
+              ));
 
         if (condition) list[i].style.display = "flex";
         else list[i].style.display = "none";
@@ -240,7 +259,8 @@ document
           .getElementsByClassName("index-title")[0]
           .innerHTML.toUpperCase();
 
-        const condition = name.toLowerCase().indexOf(textFilter.toLowerCase()) >= 0;
+        const condition =
+          name.toLowerCase().indexOf(textFilter.toLowerCase()) >= 0;
 
         if (condition) list[i].style.display = "flex";
         else list[i].style.display = "none";
@@ -296,7 +316,8 @@ document
   .addEventListener("change", (e) => {
     const filter = e.target.value.toUpperCase();
     const list = document.getElementById("acoes-indices-list").children;
-    const textFilter = document.getElementById("acoes-filter-text")
+    const textFilter = document
+      .getElementById("acoes-filter-text")
       .value.toUpperCase();
 
     if (filter === "ALL") {
@@ -315,16 +336,81 @@ document
         let name = list[i]
           .getElementsByClassName("index-title")[0]
           .innerHTML.toUpperCase();
-  
+
         const condition =
           name.toLowerCase().includes(textFilter.toLowerCase()) &&
           indices.acoes[filter.toLowerCase()]?.includes(name.toLowerCase());
-  
+
         if (condition) list[i].style.display = "flex";
         else list[i].style.display = "none";
       }
     }
+  });
 
+document.getElementById("credito-privado-filter-text").addEventListener(
+  "keyup",
+  debounce(
+    (e) => {
+      const filter = e.target.value.toUpperCase();
+      const list = document.getElementById("credito-privado-indices-list").children;
+      const familyFilter = document
+        .getElementById("credito-privado-family-filter")
+        .value.toUpperCase();
+
+      for (let i = 0; i < list.length; i++) {
+        let name = list[i]
+          .getElementsByClassName("index-title")[0]
+          .innerHTML.toUpperCase();
+
+        const condition =
+          name.indexOf(filter) >= 0 &&
+          (familyFilter === "ALL" ? true : name.indexOf(familyFilter) >= 0);
+
+        if (condition) list[i].style.display = "flex";
+        else list[i].style.display = "none";
+      }
+    },
+    250,
+    false
+  )
+);
+
+document
+  .getElementById("credito-privado-family-filter")
+  .addEventListener("change", (e) => {
+    const filter = e.target.value.toUpperCase();
+    const list = document.getElementById("credito-privado-indices-list").children;
+    const textFilter = document
+      .getElementById("credito-privado-filter-text")
+      .value.toUpperCase();
+
+    if (filter === "ALL") {
+      for (let i = 0; i < list.length; i++) {
+        let name = list[i]
+          .getElementsByClassName("index-title")[0]
+          .innerHTML.toUpperCase();
+
+        const condition = name.toLowerCase().includes(textFilter.toLowerCase());
+
+        if (condition) list[i].style.display = "flex";
+        else list[i].style.display = "none";
+      }
+
+      return;
+    }
+    
+    for (let i = 0; i < list.length; i++) {
+      let name = list[i]
+        .getElementsByClassName("index-title")[0]
+        .innerHTML.toUpperCase();
+
+      const condition =
+        name.toLowerCase().indexOf(textFilter.toLowerCase()) >= 0 &&
+        indices.credit[filter.toLowerCase()]?.includes(name.toLowerCase());
+
+      if (condition) list[i].style.display = "flex";
+      else list[i].style.display = "none";
+    }
   });
 
 function navigateTo(endpoint) {
