@@ -6,6 +6,7 @@ const colors = {
 const host = "https://storage.googleapis.com/teva-indices-public/";
 
 const csvsUrls = {
+  ifix: `${host}quotations/IFIX.csv`,
   higherRelevance: `${host}metrics/Ativos com maior relevância/3.6.1 Índice de Fundos Imobiliários Tijolo IPCA v0.25.csv`,
   quotes: `${host}quotations/3.6.1 Índice de Fundos Imobiliários Tijolo IPCA v0.25.csv`,
   standardDeviation: `${host}metrics/Desvio padrão/3.6.1 Índice de Fundos Imobiliários Tijolo IPCA v0.25.csv`,
@@ -187,6 +188,8 @@ function processTickersWithHighRelevance() {
 }
 
 function processQuotes() {
+  let ifixData = null;
+  
   const processFile = (rows) => {
     // const unpack = (rows, key) => rows.map((row) => row[key]);
     const xAxis = "Data de referência";
@@ -219,7 +222,25 @@ function processQuotes() {
       }),
     };
 
-    this.quotesChart.traces = [trace];
+    const ifixd= ifixData.map((row) => {
+      return [
+        new Date(row["Data de referência"]).getTime(),
+        parseFloat(row["Cotação do índice Retorno Total"]),
+      ];
+    });
+
+    const traceIfix = {
+      zIndex: 1,
+      type: 'line',
+      lineWidth: 1,
+      showInNavigator: true,
+      marker: { enabled: false },
+      color: Highcharts.color(colors.secondary).get("rgba"),
+      name: "IFIX",
+      data: ifixd,
+    }
+
+    this.quotesChart.traces = [trace, traceIfix];
 
     if (document.getElementById("quotes-chart")) {
       const quotesChart = Highcharts.stockChart("quotes-chart", {
@@ -227,12 +248,12 @@ function processQuotes() {
           type: "area",
           margin: [30, 0, 30, 0],
         },
-        series: [trace],
+        series: this.quotesChart.traces,
         scrollbar: { enabled: true },
         credits: { enabled: false },
         exporting: { enabled: false },
         navigator: {
-          series: [trace],
+          series: this.quotesChart.traces,
           xAxis: {
             labels: {
               formatter: function () {
@@ -245,7 +266,7 @@ function processQuotes() {
         legend: {
           enabled: true,
           align: "center",
-          layout: "vertical",
+          layout: "horizontal",
           verticalAlign: "top",
         },
         tooltip: {
@@ -396,10 +417,18 @@ function processQuotes() {
   const processBlob = async (blob) => {
     const text = await blob.text();
     const rows = csvToJSON(text);
+    
     processFile(rows)
   }
+  
+  const processIfix = async (blob) => {
+    const text = await blob.text();
+    ifixData = csvToJSON(text);
 
-  d3.blob(csvsUrls.quotes).then(processBlob);
+    d3.blob(csvsUrls.quotes).then(processBlob);
+  }
+
+  d3.blob(csvsUrls.ifix).then(processIfix);
 }
 
 function processStandardDeviation() {
