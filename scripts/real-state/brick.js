@@ -277,7 +277,11 @@ function processQuotes() {
               "</b>" +
               "<br>" +
               "<span>Cotação do índice: </span><b>" +
-              ("" + parseFloat(this.y).toFixed(2)).replace(".", ",") +
+              numberToDecimalsDigits(this.points[0].y, 2) +
+              "</b>" +
+              "<br>" +
+              "<span>Cotação IFIX: </span><b>" +
+              numberToDecimalsDigits(this.points[1].y, 2) +
               "</b>"
             );
           },
