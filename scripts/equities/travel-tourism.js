@@ -677,21 +677,23 @@ function processMonthlyReturn() {
       )
     ).sort(desc);
 
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
     let filteredByMonths = years.reduce((acc, cur) => {
-      let dataByMonth = rows
-        .filter((data) => {
-          const d = data["Mês/ano do retorno"];
-          return d.slice(d.indexOf("/") + 1) == cur;
-        })
-        .map((data) => data["Retorno"]);
+      const dataByMonth = new Array(12).fill("-");
 
-      if (dataByMonth.length < 12) {
-        const aux = new Array(12)
-          .fill("-")
-          .map((_, i) => (dataByMonth[i] ? dataByMonth[i] : "-"));
-
-        dataByMonth = aux;
-      }
+      rows.filter((data) => {
+        const d = data["Mês/ano do retorno"];
+        const year = d.slice(d.indexOf("/") + 1);
+        return year == cur;
+      }).forEach((data) => {
+        const d = data["Mês/ano do retorno"];
+        const month = d.slice(0, d.indexOf("/"));
+        
+        const idx = months.indexOf(month);
+        
+        dataByMonth[idx] = data["Retorno"] || "-";
+      });
 
       return { ...acc, [cur]: dataByMonth };
     }, {});
