@@ -5,22 +5,22 @@ const colors = {
 
 const host = "https://storage.googleapis.com/teva-indices-public/";
 
-const identifier = "3.5.1";
-const indiceName = "Índice de Fundos Imobiliários Rendimento";
+const identifier = "3.1.2";
+const indiceName = "Índice de Fundos Imobiliários Liquidez";
 const version = "v0.25";
 
 const csvsUrls = {
   ifix: `${host}quotations/IFIX.csv`,
   higherRelevance: `${host}metrics/Ativos com maior relevância/${identifier} ${indiceName} ${version}.csv`,
-  quotes: `${host}quotations/${identifier} ${indiceName} ${version}.csv`,
-  standardDeviation: `${host}metrics/Desvio padrão/${identifier} ${indiceName} ${version}.csv`,
-  sharpeIndex: `${host}metrics/Índice Sharpe/${identifier} ${indiceName} ${version}.csv`,
-  anualReturn: `${host}metrics/Retorno anual/${identifier} ${indiceName} ${version}.csv`,
-  turnOverLTM: `${host}metrics/Turnover LTM/${identifier} ${indiceName} ${version}.csv`,
-  ticksNumber: `${host}metrics/Número de ativos/${identifier} ${indiceName} ${version}.csv`,
-  turnover: `${host}metrics/Turnover/${identifier} ${indiceName} ${version}.csv`,
-  periodicsReturn: `${host}metrics/Retorno períodos/${identifier} ${indiceName} ${version}.csv`,
-  monthlyReturn: `${host}metrics/Retorno mensal/${identifier} ${indiceName} ${version}.csv`,
+  quotes: `${host}quotations/${identifier} ${indiceName} v0.25.csv`,
+  standardDeviation: `${host}metrics/Desvio padrão/${identifier} ${indiceName} v0.25.csv`,
+  sharpeIndex: `${host}metrics/Índice Sharpe/${identifier} ${indiceName} v0.25.csv`,
+  anualReturn: `${host}metrics/Retorno anual/${identifier} ${indiceName} v0.25.csv`,
+  turnOverLTM: `${host}metrics/Turnover LTM/${identifier} ${indiceName} v0.25.csv`,
+  ticksNumber: `${host}metrics/Número de ativos/${identifier} ${indiceName} v0.25.csv`,
+  turnover: `${host}metrics/Turnover/${identifier} ${indiceName} v0.25.csv`,
+  periodicsReturn: `${host}metrics/Retorno períodos/${identifier} ${indiceName} v0.25.csv`,
+  monthlyReturn: `${host}metrics/Retorno mensal/${identifier} ${indiceName} v0.25.csv`,
 };
 
 const lang = {
@@ -198,7 +198,7 @@ function processTickersWithHighRelevance() {
 
 function processQuotes() {
   let ifixData = null;
-
+  
   const processFile = (rows) => {
     // const unpack = (rows, key) => rows.map((row) => row[key]);
     const xAxis = "Data de referência";
@@ -218,7 +218,7 @@ function processQuotes() {
         enabled: false,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
-      name: "Índice de Fundos Imobiliários Rendimento",
+      name: indiceName,
       data: rows.map((row) => {
         if (lowestIndex > parseFloat(row[yAxis])) {
           lowestIndex = parseFloat(row[yAxis]);
@@ -258,8 +258,8 @@ function processQuotes() {
           margin: [30, 0, 30, 0],
         },
         series: this.quotesChart.traces,
-        credits: { enabled: false },
         scrollbar: { enabled: true },
+        credits: { enabled: false },
         exporting: { enabled: false },
         navigator: {
           series: this.quotesChart.traces,
@@ -431,9 +431,9 @@ function processQuotes() {
     const text = await blob.text();
     const rows = csvToJSON(text);
     
-    processFile(rows);
+    processFile(rows)
   }
-
+  
   const processIfix = async (blob) => {
     const text = await blob.text();
     ifixData = csvToJSON(text);

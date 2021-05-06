@@ -141,6 +141,7 @@ th, td {
 
 .vertical-table tbody tr td:not(:first-child) {
   text-align: center;
+  min-width: 8ch;
 }
 
 .vertical-table tbody tr td {

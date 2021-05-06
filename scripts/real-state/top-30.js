@@ -5,8 +5,8 @@ const colors = {
 
 const host = "https://storage.googleapis.com/teva-indices-public/";
 
-const identifier = "3.5.1";
-const indiceName = "Índice de Fundos Imobiliários Rendimento";
+const identifier = "3.1.4";
+const indiceName = "Índice de Fundos Imobiliários TOP 30";
 const version = "v0.25";
 
 const csvsUrls = {
@@ -198,7 +198,7 @@ function processTickersWithHighRelevance() {
 
 function processQuotes() {
   let ifixData = null;
-
+  
   const processFile = (rows) => {
     // const unpack = (rows, key) => rows.map((row) => row[key]);
     const xAxis = "Data de referência";
@@ -218,7 +218,7 @@ function processQuotes() {
         enabled: false,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
-      name: "Índice de Fundos Imobiliários Rendimento",
+      name: indiceName,
       data: rows.map((row) => {
         if (lowestIndex > parseFloat(row[yAxis])) {
           lowestIndex = parseFloat(row[yAxis]);
@@ -258,8 +258,8 @@ function processQuotes() {
           margin: [30, 0, 30, 0],
         },
         series: this.quotesChart.traces,
-        credits: { enabled: false },
         scrollbar: { enabled: true },
+        credits: { enabled: false },
         exporting: { enabled: false },
         navigator: {
           series: this.quotesChart.traces,
@@ -431,9 +431,9 @@ function processQuotes() {
     const text = await blob.text();
     const rows = csvToJSON(text);
     
-    processFile(rows);
+    processFile(rows)
   }
-
+  
   const processIfix = async (blob) => {
     const text = await blob.text();
     ifixData = csvToJSON(text);
