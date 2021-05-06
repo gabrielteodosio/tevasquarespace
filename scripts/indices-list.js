@@ -13,7 +13,7 @@ const indices = {
     ],
     segmento: [
       "índice de fundos imobiliários de logística",
-      "índice de fundos imobiliários de lages corporativas",
+      "índice de fundos imobiliários de lajes corporativas",
       "índice de fundos imobiliários de shoppings",
       "índice de fundos imobiliários segmento híbrido",
     ],
@@ -32,10 +32,10 @@ const indices = {
   },
   acoes: {
     amplo: ["índice de ações amplo"],
-    esg: ["índice de ações esg clean", "índice de ações esg diversidade"],
+    esg: ["índice de ações esg clean", "índice de ações mulheres na liderança"],
     setores: [
-      "índice de ações tecnologia - listadas no br e us",
-      "índice de ações tecnologia",
+      "índice de ações tecnologia brasil (listagem no brasil e nos eua)",
+      "índice de ações tecnologia brasil",
       "índice de ações saúde",
       "índice de ações bens de consumo e varejo",
       "índice de ações energia",
