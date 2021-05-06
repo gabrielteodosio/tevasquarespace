@@ -7,7 +7,7 @@ const colors = {
 const host = "https://storage.googleapis.com/teva-indices-public/";
 
 const identifier = "4.3.12";
-const indiceName = "Índice de Ações Infraestrutura";
+const indiceName = "Índice de Ações Infraestrutura e Concessões";
 const version = "v0.4";
 
 const csvsUrls = {
