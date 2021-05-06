@@ -6,18 +6,22 @@ const colors = {
 
 const host = "https://storage.googleapis.com/teva-indices-public/";
 
+const identifier = "4.1.1";
+const indiceName = "Índice de Ações Amplo";
+const version = "v0.4";
+
 const csvsUrls = {
   ibovespa: `${host}quotations/Ibovespa.csv`,
-  higherRelevance: `${host}metrics/Ativos com maior relevância/4.1.1 Índice de Ações Amplo v0.4.csv`,
-  quotes: `${host}quotations/4.1.1 Índice de Ações Amplo v0.4.csv`,
-  standardDeviation: `${host}metrics/Desvio padrão/4.1.1 Índice de Ações Amplo v0.4.csv`,
-  sharpeIndex: `${host}metrics/Índice Sharpe/4.1.1 Índice de Ações Amplo v0.4.csv`,
-  anualReturn: `${host}metrics/Retorno anual/4.1.1 Índice de Ações Amplo v0.4.csv`,
-  turnOverLTM: `${host}metrics/Turnover LTM/4.1.1 Índice de Ações Amplo v0.4.csv`,
-  ticksNumber: `${host}metrics/Número de ativos/4.1.1 Índice de Ações Amplo v0.4.csv`,
-  turnover: `${host}metrics/Turnover/4.1.1 Índice de Ações Amplo v0.4.csv`,
-  periodicsReturn: `${host}metrics/Retorno períodos/4.1.1 Índice de Ações Amplo v0.4.csv`,
-  monthlyReturn: `${host}metrics/Retorno mensal/4.1.1 Índice de Ações Amplo v0.4.csv`,
+  higherRelevance: `${host}metrics/Ativos com maior relevância/${identifier} ${indiceName} ${version}.csv`,
+  quotes: `${host}quotations/${identifier} ${indiceName} ${version}.csv`,
+  standardDeviation: `${host}metrics/Desvio padrão/${identifier} ${indiceName} ${version}.csv`,
+  sharpeIndex: `${host}metrics/Índice Sharpe/${identifier} ${indiceName} ${version}.csv`,
+  anualReturn: `${host}metrics/Retorno anual/${identifier} ${indiceName} ${version}.csv`,
+  turnOverLTM: `${host}metrics/Turnover LTM/${identifier} ${indiceName} ${version}.csv`,
+  ticksNumber: `${host}metrics/Número de ativos/${identifier} ${indiceName} ${version}.csv`,
+  turnover: `${host}metrics/Turnover/${identifier} ${indiceName} ${version}.csv`,
+  periodicsReturn: `${host}metrics/Retorno períodos/${identifier} ${indiceName} ${version}.csv`,
+  monthlyReturn: `${host}metrics/Retorno mensal/${identifier} ${indiceName} ${version}.csv`,
 };
 
 const lang = {
@@ -67,6 +71,11 @@ Vue.config.devtools = true;
 const app = new Vue({
   el: "#funds-app",
   data: () => ({
+    indice: {
+      version,
+      identifier,
+      name: indiceName,
+    },
     quote: null,
     dailyReturn: null,
     turnOverLTM: null,
@@ -338,7 +347,7 @@ function processQuotes() {
         enabled: false,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
-      name: "Índice de Ações Amplo",
+      name: indiceName,
       data: rows.map((row) => {
         return [
           new Date(row[xAxis]).getTime(),
