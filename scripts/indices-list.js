@@ -45,7 +45,7 @@ const indices = {
       "índice de ações industrial",
       "índice de ações comércio",
       "índice de ações viagem e turismo",
-      "índice de ações infraestrutura",
+      "índice de ações infraestrutura e concessões",
       "índice de ações serviços",
       "índice de ações construção civil",
       "índice de ações agricultura",
