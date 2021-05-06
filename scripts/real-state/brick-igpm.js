@@ -5,8 +5,8 @@ const colors = {
 
 const host = "https://storage.googleapis.com/teva-indices-public/";
 
-const identifier = "3.5.2";
-const indiceName = "Índice de Fundos Imobiliários Valor";
+const identifier = "3.6.2";
+const indiceName = "Índice de Fundos Imobiliários Tijolo IGPM";
 const version = "v0.25";
 
 const csvsUrls = {
