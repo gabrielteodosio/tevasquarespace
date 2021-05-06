@@ -255,11 +255,10 @@ function processQuotes() {
         },
       },
       yAxis: {
-        min: 50,
         opposite: false,
         labels: {
           formatter: function () {
-            return ("" + this.value.toFixed(2)).replace(".", ",");
+            return numberToDecimalsDigits(this.value, 2);
           },
         },
       },
