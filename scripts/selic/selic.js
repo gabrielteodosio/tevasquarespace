@@ -5,24 +5,28 @@ const colors = {
 
 const host = "https://storage.googleapis.com/teva-indices-public/";
 
+const identifier = "1.1.1";
+const indiceName = "Índice Tesouro Selic";
+const version = "v0.92";
+
 const csvsUrls = {
-  higherRelevance: `${host}metrics/Ativos com maior relevância/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  quotes: `${host}quotations/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  standardDeviation: `${host}metrics/Desvio padrão/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  sharpeIndex: `${host}metrics/Índice Sharpe/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  convexity: `${host}metrics/Convexidade/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  duration: `${host}metrics/Duration/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  modifiedDuration: `${host}metrics/Duration modificada/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  yieldToMaturity: `${host}metrics/Yield to maturity/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  anualReturn: `${host}metrics/Retorno anual/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  turnOverLTM: `${host}metrics/Turnover LTM/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  indexExposition: `${host}metrics/Exposição por indexador/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  ticksNumber: `${host}metrics/Número de ativos/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  repactuationMedia: `${host}metrics/Prazo médio de repactuação/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  turnover: `${host}metrics/Turnover/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  dueDateExposition: `${host}metrics/Exposição por vencimento/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  periodicsReturn: `${host}metrics/Retorno períodos/1.1.1 Índice Tesouro Selic v0.92.csv`,
-  monthlyReturn: `${host}metrics/Retorno mensal/1.1.1 Índice Tesouro Selic v0.92.csv`,
+  higherRelevance: `${host}metrics/Ativos com maior relevância/${identifier} ${indiceName} ${version}.csv`,
+  quotes: `${host}quotations/${identifier} ${indiceName} ${version}.csv`,
+  standardDeviation: `${host}metrics/Desvio padrão/${identifier} ${indiceName} ${version}.csv`,
+  sharpeIndex: `${host}metrics/Índice Sharpe/${identifier} ${indiceName} ${version}.csv`,
+  convexity: `${host}metrics/Convexidade/${identifier} ${indiceName} ${version}.csv`,
+  duration: `${host}metrics/Duration/${identifier} ${indiceName} ${version}.csv`,
+  modifiedDuration: `${host}metrics/Duration modificada/${identifier} ${indiceName} ${version}.csv`,
+  yieldToMaturity: `${host}metrics/Yield to maturity/${identifier} ${indiceName} ${version}.csv`,
+  anualReturn: `${host}metrics/Retorno anual/${identifier} ${indiceName} ${version}.csv`,
+  turnOverLTM: `${host}metrics/Turnover LTM/${identifier} ${indiceName} ${version}.csv`,
+  indexExposition: `${host}metrics/Exposição por indexador/${identifier} ${indiceName} ${version}.csv`,
+  ticksNumber: `${host}metrics/Número de ativos/${identifier} ${indiceName} ${version}.csv`,
+  repactuationMedia: `${host}metrics/Prazo médio de repactuação/${identifier} ${indiceName} ${version}.csv`,
+  turnover: `${host}metrics/Turnover/${identifier} ${indiceName} ${version}.csv`,
+  dueDateExposition: `${host}metrics/Exposição por vencimento/${identifier} ${indiceName} ${version}.csv`,
+  periodicsReturn: `${host}metrics/Retorno períodos/${identifier} ${indiceName} ${version}.csv`,
+  monthlyReturn: `${host}metrics/Retorno mensal/${identifier} ${indiceName} ${version}.csv`,
 };
 
 const lang = {
@@ -72,26 +76,33 @@ Vue.config.devtools = true;
 const app = new Vue({
   el: "#funds-app",
   data: () => ({
+    indice: {
+      version,
+      identifier,
+      name: indiceName,
+    },
     topTen: [],
-    convexity: {},
+    quote: null,
     duration: {},
-    modifiedDuration: {},
-    yieldToMaturity: {},
-    turnOverLTM: null,
-    ticksNumber: {},
-    repactuationMedia: {},
+    convexity: {},
     anualReturn: [],
-    loadingMetrics: true,
-    standardDeviation: [],
+    anualReturn: [],
+    sharpeIndex: [],
+    ticksNumber: {},
+    dailyReturn: null,
+    turnOverLTM: null,
+    indexExposition: [],
     periodicsReturn: [],
+    yieldToMaturity: {},
+    modifiedDuration: {},
+    loadingMetrics: true,
+    repactuationMedia: {},
+    standardDeviation: [],
     dueDateExposition: [],
     monthlyReturn: {
       years: [],
       filteredByMonths: [],
     },
-    anualReturn: [],
-    sharpeIndex: [],
-    indexExposition: [],
     quotesChart: {
       uuid: "quotes-chart",
       traces: [],
@@ -210,16 +221,19 @@ function processQuotes() {
     const xAxis = "Data de referência";
     const yAxis = "Valor do índice";
 
-    let lowestIndex = Number.MAX_VALUE;
+    const latestData = multiSort([...rows], { "Data de referência": "desc" })[0];
+
+    this.quote = latestData["Valor do índice"];
+    this.dailyReturn = latestData["Retorno diário"];
 
     const trace = {
       lineWidth: 1,
       showInNavigator: true,
       marker: {
-        enabled: true,
+        enabled: false,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
-      name: "Índice Selic",
+      name: indiceName,
       data: rows.map((row) => ([
         new Date(row[xAxis]).getTime(),
         parseFloat(row[yAxis]),
@@ -235,14 +249,11 @@ function processQuotes() {
           margin: [30, 0, 30, 0],
         },
         series: [trace],
+        credits: { enabled: false },
         scrollbar: { enabled: true },
         exporting: { enabled: false },
         navigator: {
-          series: [
-            Object.assign({}, trace, {
-              marker: { enabled: false },
-            }),
-          ],
+          series: [trace],
           xAxis: {
             labels: {
               formatter: function () {
@@ -266,7 +277,7 @@ function processQuotes() {
               "</b>" +
               "<br>" +
               "<span>Cotação do índice: </span><b>" +
-              ("" + parseFloat(this.y).toFixed(2)).replace(".", ",") +
+              numberToDecimalsDigits(this.y, 2) +
               "</b>"
             );
           },
@@ -280,13 +291,13 @@ function processQuotes() {
           },
         },
         yAxis: {
+          min: 50,
           opposite: false,
           labels: {
             formatter: function () {
-              return ("" + this.value.toFixed(2)).replace(".", ",");
+              return numberToDecimalsDigits(this.value, 2);
             },
           },
-          min: 50,
         },
         plotOptions: {
           area: {
@@ -414,7 +425,7 @@ function processQuotes() {
 
 function processStandardDeviation() {
   const processFile = (rows) => (this.standardDeviation = rows);
-  
+
   const processBlob = async (blob) => {
     const text = await blob.text();
     const rows = csvToJSON(text);
@@ -422,18 +433,6 @@ function processStandardDeviation() {
   }
 
   d3.blob(csvsUrls.standardDeviation).then(processBlob);
-}
-
-function processSharpeIndex() {
-  const processFile = (rows) => (this.sharpeIndex = rows);
-
-  const processBlob = async (blob) => {
-    const text = await blob.text();
-    const rows = csvToJSON(text);
-    processFile(rows)
-  }
-
-  d3.blob(csvsUrls.sharpeIndex).then(processBlob);
 }
 
 function processSharpeIndex() {
@@ -498,7 +497,7 @@ function processYieldToMaturity() {
 
 function processAnualReturn() {
   const processFile = (rows) => (this.anualReturn = rows.sort((a,b) => desc(a, b, "Ano do retorno")));
-  
+
   const processBlob = async (blob) => {
     const text = await blob.text();
     const rows = csvToJSON(text);
@@ -659,24 +658,30 @@ function processMonthlyReturn() {
   const processFile = (rows) => {
     const years = Array.from(
       new Set(
-        rows.map((data) => new Date(Object.values(data)[0]).getFullYear())
+        rows.map((data) => {
+          const d = data["Mês/ano do retorno"]
+          return d.slice(d.indexOf("/") + 1);
+        })
       )
     ).sort(desc);
 
-    let filteredByMonths = years.reduce((acc, cur) => {
-      let dataByMonth = rows
-        .filter(
-          (data) => new Date(data["Mês/ano do retorno"]).getFullYear() == cur
-        )
-        .map((data) => data["Retorno"]);
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-      if (dataByMonth.length < 12) {
-        const aux = new Array(12)
-          .fill("-")
-          .map((_, i) => (dataByMonth[i] ? dataByMonth[i] : "-"));
+    const filteredByMonths = years.reduce((acc, cur) => {
+      const dataByMonth = new Array(12).fill("-");
 
-        dataByMonth = aux;
-      }
+      rows.filter((data) => {
+        const d = data["Mês/ano do retorno"];
+        const year = d.slice(d.indexOf("/") + 1);
+        return year == cur;
+      }).forEach((data) => {
+        const d = data["Mês/ano do retorno"];
+        const month = d.slice(0, d.indexOf("/"));
+
+        const idx = months.indexOf(month);
+
+        dataByMonth[idx] = data["Retorno"] || "-";
+      });
 
       return { ...acc, [cur]: dataByMonth };
     }, {});
@@ -707,7 +712,7 @@ function numberToPercentalDecimalsDigits(number, digits) {
   if (digits === 0) {
     return decimalDigitsString.slice(0, commaIndex).replaceAll(".", ",");
   }
-  
+
   return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
 
@@ -715,7 +720,7 @@ function numberToDecimalsDigits(number, digits) {
   const decimalDigits = number;
   const decimalDigitsString = "" + decimalDigits;
   const commaIndex = decimalDigitsString.indexOf(".")
-  
+
   if (commaIndex === -1) {
     return decimalDigitsString.replaceAll(".", ",");
   }
@@ -799,13 +804,13 @@ function desc(a, b, column) {
 function findYearReturnIndex(year) {
   for (let idx = 0; idx < this.anualReturn.length; idx++) {
     const ret = this.anualReturn[idx];
-    const yr = parseInt(ret["Ano do retorno"]);
-    
-    if (yr === year) {
+    const yr = ret["Ano do retorno"];
+
+    if (yr == year) {
       return idx;
     }
   }
-  
+
   return false;
 }
 
@@ -837,7 +842,7 @@ function csvToJSON(csv) {
   const result = []
   const headers = lines[0].split(',')
 
-  for (let i = 1; i < lines.length; i++) {        
+  for (let i = 1; i < lines.length; i++) {
     if (!lines[i])
       continue
     const obj = {}
@@ -858,8 +863,8 @@ function formatDateToBr(date) {
 }
 
 function adicionaZero(numero){
-  if (numero <= 9) 
+  if (numero <= 9)
     return "0" + numero;
   else
-    return numero; 
+    return numero;
 }

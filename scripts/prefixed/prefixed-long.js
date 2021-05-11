@@ -5,6 +5,10 @@ const colors = {
 
 const host = "https://storage.googleapis.com/teva-indices-public/";
 
+const identifier = "1.3.5";
+const indiceName = "Índice Tesouro Pré-Fixado Longo Prazo";
+const version = "v0.92";
+
 const csvsUrls = {
   higherRelevance: `${host}metrics/Ativos com maior relevância/1.3.5 Índice Tesouro Pré-Fixado Longo Prazo v0.92.csv`,
   quotes: `${host}quotations/1.3.5 Índice Tesouro Pré-Fixado Longo Prazo v0.92.csv`,
@@ -72,26 +76,33 @@ Vue.config.devtools = true;
 const app = new Vue({
   el: "#funds-app",
   data: () => ({
+    indice: {
+      version,
+      identifier,
+      name: indiceName,
+    },
     topTen: [],
-    convexity: {},
+    quote: null,
     duration: {},
-    modifiedDuration: {},
-    yieldToMaturity: {},
-    turnOverLTM: null,
-    ticksNumber: {},
-    repactuationMedia: {},
+    convexity: {},
     anualReturn: [],
-    loadingMetrics: true,
-    standardDeviation: [],
+    anualReturn: [],
+    sharpeIndex: [],
+    ticksNumber: {},
+    dailyReturn: null,
+    turnOverLTM: null,
+    indexExposition: [],
     periodicsReturn: [],
+    yieldToMaturity: {},
+    modifiedDuration: {},
+    loadingMetrics: true,
+    repactuationMedia: {},
+    standardDeviation: [],
     dueDateExposition: [],
     monthlyReturn: {
       years: [],
       filteredByMonths: [],
     },
-    anualReturn: [],
-    sharpeIndex: [],
-    indexExposition: [],
     quotesChart: {
       uuid: "quotes-chart",
       traces: [],
@@ -210,20 +221,23 @@ function processQuotes() {
     const xAxis = "Data de referência";
     const yAxis = "Valor do índice";
 
-    let lowestIndex = Number.MAX_VALUE;
+    const latestData = multiSort([...rows], { "Data de referência": "desc" })[0];
+
+    this.quote = latestData["Cotação do índice"];
+    this.dailyReturn = latestData["Retorno diário"];
 
     const trace = {
       lineWidth: 1,
       showInNavigator: true,
       marker: {
-        enabled: true,
+        enabled: false,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
       name: "Índice Pré-fixado Longo Prazo",
-      data: rows.map((row) => ([
+      data: rows.map((row) => [
         new Date(row[xAxis]).getTime(),
         parseFloat(row[yAxis]),
-      ])),
+      ]),
     };
 
     this.quotesChart.traces = [trace];
@@ -235,14 +249,12 @@ function processQuotes() {
           margin: [30, 0, 30, 0],
         },
         series: [trace],
+        credits: { enabled: false },
         scrollbar: { enabled: true },
         exporting: { enabled: false },
         navigator: {
-          series: [
-            Object.assign({}, trace, {
-              marker: { enabled: false },
-            }),
-          ],
+          enabled: true,
+          series: [trace],
           xAxis: {
             labels: {
               formatter: function () {
@@ -250,7 +262,6 @@ function processQuotes() {
               },
             },
           },
-          enabled: true,
         },
         legend: {
           enabled: true,
@@ -266,7 +277,7 @@ function processQuotes() {
               "</b>" +
               "<br>" +
               "<span>Cotação do índice: </span><b>" +
-              ("" + parseFloat(this.y).toFixed(2)).replace(".", ",") +
+              numberToDecimalsDigits(this.y, 2) +
               "</b>"
             );
           },
@@ -283,7 +294,7 @@ function processQuotes() {
           opposite: false,
           labels: {
             formatter: function () {
-              return ("" + this.value.toFixed(2)).replace(".", ",");
+              return numberToDecimalsDigits(this.value, 2);
             },
           },
           min: 50,
@@ -414,7 +425,7 @@ function processQuotes() {
 
 function processStandardDeviation() {
   const processFile = (rows) => (this.standardDeviation = rows);
-  
+
   const processBlob = async (blob) => {
     const text = await blob.text();
     const rows = csvToJSON(text);
@@ -498,7 +509,7 @@ function processYieldToMaturity() {
 
 function processAnualReturn() {
   const processFile = (rows) => (this.anualReturn = rows.sort((a,b) => desc(a, b, "Ano do retorno")));
-  
+
   const processBlob = async (blob) => {
     const text = await blob.text();
     const rows = csvToJSON(text);
@@ -659,24 +670,30 @@ function processMonthlyReturn() {
   const processFile = (rows) => {
     const years = Array.from(
       new Set(
-        rows.map((data) => new Date(Object.values(data)[0]).getFullYear())
+        rows.map((data) => {
+          const d = data["Mês/ano do retorno"]
+          return d.slice(d.indexOf("/") + 1);
+        })
       )
     ).sort(desc);
 
-    let filteredByMonths = years.reduce((acc, cur) => {
-      let dataByMonth = rows
-        .filter(
-          (data) => new Date(data["Mês/ano do retorno"]).getFullYear() == cur
-        )
-        .map((data) => data["Retorno"]);
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
-      if (dataByMonth.length < 12) {
-        const aux = new Array(12)
-          .fill("-")
-          .map((_, i) => (dataByMonth[i] ? dataByMonth[i] : "-"));
+    const filteredByMonths = years.reduce((acc, cur) => {
+      const dataByMonth = new Array(12).fill("-");
 
-        dataByMonth = aux;
-      }
+      rows.filter((data) => {
+        const d = data["Mês/ano do retorno"];
+        const year = d.slice(d.indexOf("/") + 1);
+        return year == cur;
+      }).forEach((data) => {
+        const d = data["Mês/ano do retorno"];
+        const month = d.slice(0, d.indexOf("/"));
+
+        const idx = months.indexOf(month);
+
+        dataByMonth[idx] = data["Retorno"] || "-";
+      });
 
       return { ...acc, [cur]: dataByMonth };
     }, {});
@@ -707,7 +724,7 @@ function numberToPercentalDecimalsDigits(number, digits) {
   if (digits === 0) {
     return decimalDigitsString.slice(0, commaIndex).replaceAll(".", ",");
   }
-  
+
   return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
 
@@ -715,7 +732,7 @@ function numberToDecimalsDigits(number, digits) {
   const decimalDigits = number;
   const decimalDigitsString = "" + decimalDigits;
   const commaIndex = decimalDigitsString.indexOf(".")
-  
+
   if (commaIndex === -1) {
     return decimalDigitsString.replaceAll(".", ",");
   }
@@ -799,13 +816,13 @@ function desc(a, b, column) {
 function findYearReturnIndex(year) {
   for (let idx = 0; idx < this.anualReturn.length; idx++) {
     const ret = this.anualReturn[idx];
-    const yr = parseInt(ret["Ano do retorno"]);
-    
-    if (yr === year) {
+    const yr = ret["Ano do retorno"];
+
+    if (yr == year) {
       return idx;
     }
   }
-  
+
   return false;
 }
 
@@ -837,7 +854,7 @@ function csvToJSON(csv) {
   const result = []
   const headers = lines[0].split(',')
 
-  for (let i = 1; i < lines.length; i++) {        
+  for (let i = 1; i < lines.length; i++) {
     if (!lines[i])
       continue
     const obj = {}
@@ -858,8 +875,8 @@ function formatDateToBr(date) {
 }
 
 function adicionaZero(numero){
-  if (numero <= 9) 
+  if (numero <= 9)
     return "0" + numero;
   else
-    return numero; 
+    return numero;
 }

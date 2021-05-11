@@ -5,24 +5,28 @@ const colors = {
 
 const host = "https://storage.googleapis.com/teva-indices-public/";
 
+const identifier = "1.2.5";
+const indiceName = "Índice Tesouro IPCA Ultra-longo Prazo";
+const version = "v0.92";
+
 const csvsUrls = {
-  higherRelevance: `${host}metrics/Ativos com maior relevância/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  quotes: `${host}quotations/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  standardDeviation: `${host}metrics/Desvio padrão/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  sharpeIndex: `${host}metrics/Índice Sharpe/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  convexity: `${host}metrics/Convexidade/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  duration: `${host}metrics/Duration/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  modifiedDuration: `${host}metrics/Duration modificada/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  yieldToMaturity: `${host}metrics/Yield to maturity/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  anualReturn: `${host}metrics/Retorno anual/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  turnOverLTM: `${host}metrics/Turnover LTM/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  indexExposition: `${host}metrics/Exposição por indexador/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  ticksNumber: `${host}metrics/Número de ativos/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  repactuationMedia: `${host}metrics/Prazo médio de repactuação/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  turnover: `${host}metrics/Turnover/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  dueDateExposition: `${host}metrics/Exposição por vencimento/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  periodicsReturn: `${host}metrics/Retorno períodos/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
-  monthlyReturn: `${host}metrics/Retorno mensal/1.2.5 Índice Tesouro IPCA Ultra-longo Prazo v0.92.csv`,
+  higherRelevance: `${host}metrics/Ativos com maior relevância/${identifier} ${indiceName} ${version}.csv`,
+  quotes: `${host}quotations/${identifier} ${indiceName} ${version}.csv`,
+  standardDeviation: `${host}metrics/Desvio padrão/${identifier} ${indiceName} ${version}.csv`,
+  sharpeIndex: `${host}metrics/Índice Sharpe/${identifier} ${indiceName} ${version}.csv`,
+  convexity: `${host}metrics/Convexidade/${identifier} ${indiceName} ${version}.csv`,
+  duration: `${host}metrics/Duration/${identifier} ${indiceName} ${version}.csv`,
+  modifiedDuration: `${host}metrics/Duration modificada/${identifier} ${indiceName} ${version}.csv`,
+  yieldToMaturity: `${host}metrics/Yield to maturity/${identifier} ${indiceName} ${version}.csv`,
+  anualReturn: `${host}metrics/Retorno anual/${identifier} ${indiceName} ${version}.csv`,
+  turnOverLTM: `${host}metrics/Turnover LTM/${identifier} ${indiceName} ${version}.csv`,
+  indexExposition: `${host}metrics/Exposição por indexador/${identifier} ${indiceName} ${version}.csv`,
+  ticksNumber: `${host}metrics/Número de ativos/${identifier} ${indiceName} ${version}.csv`,
+  repactuationMedia: `${host}metrics/Prazo médio de repactuação/${identifier} ${indiceName} ${version}.csv`,
+  turnover: `${host}metrics/Turnover/${identifier} ${indiceName} ${version}.csv`,
+  dueDateExposition: `${host}metrics/Exposição por vencimento/${identifier} ${indiceName} ${version}.csv`,
+  periodicsReturn: `${host}metrics/Retorno períodos/${identifier} ${indiceName} ${version}.csv`,
+  monthlyReturn: `${host}metrics/Retorno mensal/${identifier} ${indiceName} ${version}.csv`,
 };
 
 const lang = {
@@ -72,28 +76,33 @@ Vue.config.devtools = true;
 const app = new Vue({
   el: "#funds-app",
   data: () => ({
+    indice: {
+      version,
+      identifier,
+      name: indiceName,
+    },
     topTen: [],
     quote: null,
     duration: {},
     convexity: {},
     anualReturn: [],
+    anualReturn: [],
+    sharpeIndex: [],
     ticksNumber: {},
     dailyReturn: null,
     turnOverLTM: null,
+    indexExposition: [],
     periodicsReturn: [],
     yieldToMaturity: {},
     modifiedDuration: {},
     loadingMetrics: true,
-    standardDeviation: [],
     repactuationMedia: {},
+    standardDeviation: [],
     dueDateExposition: [],
     monthlyReturn: {
       years: [],
       filteredByMonths: [],
     },
-    anualReturn: [],
-    sharpeIndex: [],
-    indexExposition: [],
     quotesChart: {
       uuid: "quotes-chart",
       traces: [],
@@ -212,9 +221,7 @@ function processQuotes() {
     const xAxis = "Data de referência";
     const yAxis = "Valor do índice";
 
-    let lowestIndex = Number.MAX_VALUE;
-
-    const latestData = multiSort(rows, { "Data de referência": "desc" })[0];
+    const latestData = multiSort([...rows], { "Data de referência": "desc" })[0];
 
     this.quote = latestData["Cotação do índice"];
     this.dailyReturn = latestData["Retorno diário"];
@@ -226,17 +233,11 @@ function processQuotes() {
         enabled: false,
         fillColor: Highcharts.color(colors.primary).get("rgba"),
       },
-      name: "Índice IPCA Ultra Longo Prazo",
-      data: rows.map((row) => {
-        if (lowestIndex > parseFloat(row[yAxis])) {
-          lowestIndex = parseFloat(row[yAxis]);
-        }
-        
-        return [
-          new Date(row[xAxis]).getTime(),
-          parseFloat(row[yAxis]),
-        ];
-      }),
+      name: indiceName,
+      data: rows.map((row) => [
+        new Date(row[xAxis]).getTime(),
+        parseFloat(row[yAxis]),
+      ]),
     };
 
     this.quotesChart.traces = [trace];
@@ -293,7 +294,7 @@ function processQuotes() {
           opposite: false,
           labels: {
             formatter: function () {
-              return ("" + this.value.toFixed(2)).replace(".", ",");
+              return numberToDecimalsDigits(this.value, 2);
             },
           },
           min: 50,
@@ -396,13 +397,11 @@ function processQuotes() {
                   },
                 },
                 yAxis: {
+                  title: null,
                   labels: {
-                    align: "left",
                     x: 0,
                     y: -2,
-                  },
-                  title: {
-                    text: "",
+                    align: "left",
                   },
                 },
               },
@@ -424,7 +423,7 @@ function processQuotes() {
 
 function processStandardDeviation() {
   const processFile = (rows) => (this.standardDeviation = rows);
-  
+
   const processBlob = async (blob) => {
     const text = await blob.text();
     const rows = csvToJSON(text);
@@ -508,7 +507,7 @@ function processYieldToMaturity() {
 
 function processAnualReturn() {
   const processFile = (rows) => (this.anualReturn = rows.sort((a,b) => desc(a, b, "Ano do retorno")));
-  
+
   const processBlob = async (blob) => {
     const text = await blob.text();
     const rows = csvToJSON(text);
@@ -676,21 +675,23 @@ function processMonthlyReturn() {
       )
     ).sort(desc);
 
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
     let filteredByMonths = years.reduce((acc, cur) => {
-      let dataByMonth = rows
-        .filter((data) => {
-          const d = data["Mês/ano do retorno"]
-          return d.slice(d.indexOf("/") + 1) == cur;
-        })
-        .map((data) => data["Retorno"]);
+      const dataByMonth = new Array(12).fill("-");
 
-      if (dataByMonth.length < 12) {
-        const aux = new Array(12)
-          .fill("-")
-          .map((_, i) => (dataByMonth[i] ? dataByMonth[i] : "-"));
+      rows.filter((data) => {
+        const d = data["Mês/ano do retorno"];
+        const year = d.slice(d.indexOf("/") + 1);
+        return year == cur;
+      }).forEach((data) => {
+        const d = data["Mês/ano do retorno"];
+        const month = d.slice(0, d.indexOf("/"));
 
-        dataByMonth = aux;
-      }
+        const idx = months.indexOf(month);
+
+        dataByMonth[idx] = data["Retorno"] || "-";
+      });
 
       return { ...acc, [cur]: dataByMonth };
     }, {});
@@ -721,7 +722,7 @@ function numberToPercentalDecimalsDigits(number, digits) {
   if (digits === 0) {
     return decimalDigitsString.slice(0, commaIndex).replaceAll(".", ",");
   }
-  
+
   return decimalDigitsString.slice(0, commaIndex + 1 + digits).replaceAll(".", ",");
 }
 
@@ -729,7 +730,7 @@ function numberToDecimalsDigits(number, digits) {
   const decimalDigits = number;
   const decimalDigitsString = "" + decimalDigits;
   const commaIndex = decimalDigitsString.indexOf(".")
-  
+
   if (commaIndex === -1) {
     return decimalDigitsString.replaceAll(".", ",");
   }
@@ -814,12 +815,12 @@ function findYearReturnIndex(year) {
   for (let idx = 0; idx < this.anualReturn.length; idx++) {
     const ret = this.anualReturn[idx];
     const yr = ret["Ano do retorno"];
-    
+
     if (yr == year) {
       return idx;
     }
   }
-  
+
   return false;
 }
 
@@ -851,7 +852,7 @@ function csvToJSON(csv) {
   const result = []
   const headers = lines[0].split(',')
 
-  for (let i = 1; i < lines.length; i++) {        
+  for (let i = 1; i < lines.length; i++) {
     if (!lines[i])
       continue
     const obj = {}
@@ -872,8 +873,8 @@ function formatDateToBr(date) {
 }
 
 function adicionaZero(numero){
-  if (numero <= 9) 
+  if (numero <= 9)
     return "0" + numero;
   else
-    return numero; 
+    return numero;
 }
