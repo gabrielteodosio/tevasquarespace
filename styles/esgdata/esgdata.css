@@ -4,3 +4,13 @@
   background-color: #222222;
   color: whitesmoke;
 }
+
+#adm-border-chart,
+#adm-border-chart2,
+#thermomether-chart,
+#gender-numbers-chart,
+#president-adm-chart2,
+#age-distribution-chart {
+  display: flex;
+  justify-content: center;
+}

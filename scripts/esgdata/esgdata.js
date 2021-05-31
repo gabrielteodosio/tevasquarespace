@@ -26,6 +26,8 @@ const jsonUrls = {
   companies_distribution_number_women_boards: `${host}esg-data/study/companies_distribution_number_women_boards.json`,
   adm_board_mandates: `${host}esg-data/study/adm_board_mandates.json`,
   age_distribution_adm_board: `${host}esg-data/study/age_distribution_adm_board.json`,
+  gender_numbers_boards: `${host}esg-data/study/gender_numbers_boards.json`,
+  thermometer: `${host}esg-data/thermometer/Women on Board - thermometer.json`,
   companies_with_more_than_2women:
     "https://combinatronics.com/gabrielteodosio/tevasquarespace/master/json/esgdata/companies_with_more_than_2women.json",
   companies_with_more_than_2women_region:
@@ -38,7 +40,6 @@ const jsonUrls = {
     "https://combinatronics.com/gabrielteodosio/tevasquarespace/master/json/esgdata/gender_age_administration_board.json",
   gender_mandates_administration_board:
     "https://combinatronics.com/gabrielteodosio/tevasquarespace/master/json/esgdata/gender_mandates_administration_board.json",
-  gender_numbers_boards: `${host}esg-data/study/gender_numbers_boards.json`,
   gender_president_administration_board:
     "https://combinatronics.com/gabrielteodosio/tevasquarespace/master/json/esgdata/gender_president_administration_board.json",
   gender_president_director_board:
@@ -55,7 +56,6 @@ const jsonUrls = {
     "https://combinatronics.com/gabrielteodosio/tevasquarespace/master/json/esgdata/women_numbers_boards.json",
   years_to_equality:
     "https://combinatronics.com/gabrielteodosio/tevasquarespace/master/json/esgdata/years_to_equality.json",
-  thermometer: `${host}esg-data/thermometer/Women on Board - thermometer.json`,
 };
 
 document.addEventListener("DOMContentLoaded", function (event) {
@@ -90,8 +90,8 @@ function processThermother() {
 
     const chartOptions = {
       chart: {
-        type: "column",
         width: 200,
+        type: "column",
         backgroundColor: "transparent",
       },
       title: null,
@@ -591,7 +591,7 @@ function processGenderNumbersBoards() {
         Highcharts.merge(chartOptions, {
           chart: {
             type: "item",
-            width: 550,
+            width: 500,
           },
           series: [
             {
@@ -607,17 +607,17 @@ function processGenderNumbersBoards() {
               },
 
               // Circular options
-              center: ["50%", "88%"],
-              size: "150%",
-              startAngle: -100,
+              size: "140%",
               endAngle: 100,
+              startAngle: -100,
+              center: ["50%", "88%"],
             },
           ],
           plotOptions: {
             item: {
               lineWidth: 0,
-              pointPadding: 0.3,
               borderWidth: 0,
+              pointPadding: 0.3,
             },
           },
         })
@@ -799,7 +799,12 @@ function processGenderNumbersBoards() {
         Highcharts.merge(chartOptions, {
           chart: { type: "column" },
           series: [NTraceMen, NTraceWomen],
-          xAxis: { categories },
+          xAxis: {
+            categories,
+            labels: {
+              rotation: -90
+            },
+          },
           yAxis: {
             title: null,
             visible: false,
@@ -1865,8 +1870,6 @@ function quarterToYear(quarter) {
 // 2 Tri: Junho
 // 3 Tri: Setembro
 // 4 Tri: Dezembro
-
-//
 function quarterToTrimester(quarter) {
   const arr = ["1Q", "2Q", "3Q", "4Q"];
   const aux = ["Mar", "Jun", "Set", "Dez"];

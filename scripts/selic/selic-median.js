@@ -191,12 +191,13 @@ function processTickersWithHighRelevance() {
         height: 500 * topTen.length / 10,
       },
       series: [trace],
-      exporting: { enabled: false },
-      legend: { enabled: false },
-      tooltip: { enabled: false },
       xAxis: { visible: false },
       yAxis: { visible: false },
-      title: { text: "" },
+      legend: { enabled: false },
+      credits: { enabled: false },
+      tooltip: { enabled: false },
+      exporting: { enabled: false },
+      title: null,
       plotOptions: {
         series: {
           groupPadding: 0,

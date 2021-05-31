@@ -189,13 +189,14 @@ function processTickersWithHighRelevance() {
         type: "bar",
         height: 500 * topTen.length / 10,
       },
+      title: null,
       series: [trace],
-      exporting: { enabled: false },
-      legend: { enabled: false },
-      tooltip: { enabled: false },
       xAxis: { visible: false },
       yAxis: { visible: false },
-      title: { text: "" },
+      legend: { enabled: false },
+      credits: { enabled: false },
+      tooltip: { enabled: false },
+      exporting: { enabled: false },
       plotOptions: {
         series: {
           groupPadding: 0,
@@ -220,8 +221,6 @@ function processQuotes() {
     // const unpack = (rows, key) => rows.map((row) => row[key]);
     const xAxis = "Data de referência";
     const yAxis = "Valor do índice";
-
-    let lowestIndex = Number.MAX_VALUE;
 
     const latestData = multiSort([...rows], { "Data de referência": "desc" })[0];
 

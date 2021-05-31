@@ -189,13 +189,14 @@ function processTickersWithHighRelevance() {
         type: "bar",
         height: 500 * topTen.length / 10,
       },
+      title: null,
       series: [trace],
-      exporting: { enabled: false },
-      legend: { enabled: false },
-      tooltip: { enabled: false },
       xAxis: { visible: false },
       yAxis: { visible: false },
-      title: { text: "" },
+      legend: { enabled: false },
+      credits: { enabled: false },
+      tooltip: { enabled: false },
+      exporting: { enabled: false },
       plotOptions: {
         series: {
           groupPadding: 0.1,
@@ -612,7 +613,7 @@ function processDueDateExposition() {
     };
 
     if (document.getElementById("due-date-chart")) {
-      const topTenChart = Highcharts.chart("due-date-chart", {
+      const dueDateChart = Highcharts.chart("due-date-chart", {
         chart: { type: "pie", marginBottom: 50 },
         series: [trace],
         exporting: { enabled: false },

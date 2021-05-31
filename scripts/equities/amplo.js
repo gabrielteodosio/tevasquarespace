@@ -259,7 +259,7 @@ function processQuotes() {
         opposite: false,
         labels: {
           formatter: function () {
-            return ("" + this.value.toFixed(2)).replace(".", ",");
+            return numberToDecimalsDigits(this.value, 2);
           },
         },
       },
@@ -323,7 +323,7 @@ function processQuotes() {
             title: "Máximo de tempo",
           },
         ],
-        
+
       },
     });
   };
@@ -393,7 +393,7 @@ function processQuotes() {
         ];
       }),
     }
-    
+
     this.quotesChart.traces = [traceIbovespa, trace];
     renderChart([trace, traceIbovespa])
   };
@@ -410,7 +410,7 @@ function processQuotes() {
 
     d3.blob(csvsUrls.quotes).then(processQuote);
   };
-  
+
   d3.blob(csvsUrls.ibovespa).then(processIbovespa);
 }
 
@@ -690,9 +690,9 @@ function processMonthlyReturn() {
       }).forEach((data) => {
         const d = data["Mês/ano do retorno"];
         const month = d.slice(0, d.indexOf("/"));
-        
+
         const idx = months.indexOf(month);
-        
+
         dataByMonth[idx] = data["Retorno"] || "-";
       });
 
