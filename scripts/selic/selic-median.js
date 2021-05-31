@@ -81,6 +81,7 @@ const app = new Vue({
       identifier,
       name: indiceName,
     },
+    ytd: null,
     topTen: [],
     quote: null,
     duration: {},
@@ -598,7 +599,10 @@ function processRepactuationMedia() {
 }
 
 function processPeriodicsReturn() {
-  const processFile = (rows) => (this.periodicsReturn = rows);
+  const processFile = (rows) => {
+    this.periodicsReturn = rows;
+    this.ytd = rows[0]["Retorno"];
+  };
 
   const processBlob = async (blob) => {
     const text = await blob.text();
