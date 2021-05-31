@@ -1,26 +1,22 @@
 const indices = {
   tesouro: {
-    "pós fixado selic": [
-      "índice tesouro selic",
-      "índice tesouro selic curto prazo",
-      "índice tesouro selic médio prazo",
-    ],
-    "pós fixado ipca": [
-      "índice tesouro ipca total",
-      "índice tesouro ipca curto prazo",
-      "índice tesouro ipca médio prazo",
-      "índice tesouro ipca longo prazo",
-      "índice tesouro ipca ultra-longo prazo",
-      "índice tesouro ipca ultra-longo monoativo",
+    selic: ["selic", "selic curto prazo", "selic médio prazo"],
+    ipca: [
+      "ipca total",
+      "ipca curto prazo",
+      "ipca médio prazo",
+      "ipca longo prazo",
+      "ipca ultra-longo prazo",
+      "ipca ultra-longo monoativo",
     ],
     "pré fixado": [
-      "índice tesouro pré-fixado total",
-      "índice tesouro pré-fixado curto prazo",
-      "índice tesouro pré-fixado médio prazo",
-      "índice tesouro pré-fixado longo prazo",
+      "pré fixado total",
+      "pré fixado curto prazo",
+      "pré fixado médio prazo",
+      "pré-fixado longo prazo",
     ],
-    "tesouro total": ["índice tesouro total"],
-    "tesouro selic e ipca": ["índice tesouro selic incentivado"],
+    "tesouro total": ["tesouro total"],
+    "selic ipca": ["selic incentivado"],
   },
   fiis: {
     amplos: [
@@ -30,7 +26,7 @@ const indices = {
       "índice de fundos imobiliários top 30",
       "índice de fundos imobiliários top 15",
     ],
-    "tijolo/papel": [
+    "tijolo papel": [
       "índice de fundos imobiliários de papel",
       "índice de fundos imobiliários de tijolo",
     ],
@@ -147,28 +143,30 @@ document
           .innerHTML.toUpperCase();
 
         const condition =
-          name.indexOf(textFilter) >= 0 &&
-          (filter === "ALL" || name.indexOf(filter) >= 0);
+          name.toLowerCase().indexOf(textFilter.toLowerCase()) >= 0;
 
         if (condition) list[i].style.display = "flex";
         else list[i].style.display = "none";
       }
+    } else {
+      for (let i = 0; i < list.length; i++) {
+        let name = list[i]
+          .getElementsByClassName("index-title")[0]
+          .innerHTML.toUpperCase();
 
-      return;
-    }
+        console.log({
+          name: name.toLowerCase(),
+          textFilter: textFilter.toLowerCase(),
+          filter: filter.toLowerCase(),
+        });
 
-    console.log('a')
+        const condition =
+          name.toLowerCase().indexOf(textFilter.toLowerCase()) >= 0 &&
+          indices.tesouro[filter.toLowerCase()]?.includes(name.toLowerCase());
 
-    for (let i = 0; i < list.length; i++) {
-      let name = list[i]
-        .getElementsByClassName("index-title")[0]
-        .innerHTML.toUpperCase();
-
-      const condition =
-        name.indexOf(filter) >= 0 && name.indexOf(textFilter) >= 0;
-
-      if (condition) list[i].style.display = "flex";
-      else list[i].style.display = "none";
+        if (condition) list[i].style.display = "flex";
+        else list[i].style.display = "none";
+      }
     }
   });
 
@@ -200,40 +198,39 @@ document.getElementById("esg-filter-text").addEventListener(
   )
 );
 
-document.getElementById("esg-family-filter")
-  .addEventListener("change", (e) => {
-    const filter = e.target.value.toUpperCase();
-    const list = document.getElementById("esg-indices-list").children;
-    const textFilter = document
-      .getElementById("esg-filter-text")
-      .value.toUpperCase();
+document.getElementById("esg-family-filter").addEventListener("change", (e) => {
+  const filter = e.target.value.toUpperCase();
+  const list = document.getElementById("esg-indices-list").children;
+  const textFilter = document
+    .getElementById("esg-filter-text")
+    .value.toUpperCase();
 
-    if (filter === "ALL") {
-      for (let i = 0; i < list.length; i++) {
-        let name = list[i]
-          .getElementsByClassName("index-title")[0]
-          .innerHTML.toUpperCase();
+  if (filter === "ALL") {
+    for (let i = 0; i < list.length; i++) {
+      let name = list[i]
+        .getElementsByClassName("index-title")[0]
+        .innerHTML.toUpperCase();
 
-        const condition = name.toLowerCase().includes(textFilter.toLowerCase());
+      const condition = name.toLowerCase().includes(textFilter.toLowerCase());
 
-        if (condition) list[i].style.display = "flex";
-        else list[i].style.display = "none";
-      }
-    } else {
-      for (let i = 0; i < list.length; i++) {
-        let name = list[i]
-          .getElementsByClassName("index-title")[0]
-          .innerHTML.toUpperCase();
-
-        const condition =
-          name.toLowerCase().includes(textFilter.toLowerCase()) &&
-          indices.acoes[filter.toLowerCase()]?.includes(name.toLowerCase());
-
-        if (condition) list[i].style.display = "flex";
-        else list[i].style.display = "none";
-      }
+      if (condition) list[i].style.display = "flex";
+      else list[i].style.display = "none";
     }
-  });
+  } else {
+    for (let i = 0; i < list.length; i++) {
+      let name = list[i]
+        .getElementsByClassName("index-title")[0]
+        .innerHTML.toUpperCase();
+
+      const condition =
+        name.toLowerCase().includes(textFilter.toLowerCase()) &&
+        indices.acoes[filter.toLowerCase()]?.includes(name.toLowerCase());
+
+      if (condition) list[i].style.display = "flex";
+      else list[i].style.display = "none";
+    }
+  }
+});
 
 document.getElementById("imobiliarios-indices-filter-text").addEventListener(
   "keyup",
