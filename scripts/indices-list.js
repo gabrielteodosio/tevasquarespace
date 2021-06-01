@@ -13,7 +13,7 @@ const indices = {
       "pré fixado total",
       "pré fixado curto prazo",
       "pré fixado médio prazo",
-      "pré-fixado longo prazo",
+      "pré fixado longo prazo",
     ],
     "tesouro total": ["tesouro total"],
     "selic ipca": ["selic incentivado"],
@@ -70,7 +70,7 @@ const indices = {
       "índice de ações construção civil",
       "índice de ações agricultura",
     ],
-    temáticos: [
+    tematicos: [
       "índice de ações excl. empresas estatais",
       "índice de ações empresas públicas",
       "índice de ações exportação",
