@@ -632,8 +632,9 @@ function processDueDateExposition() {
       const topTenChart = Highcharts.chart("due-date-chart", {
         chart: { type: "pie", marginBottom: 50 },
         series: [trace],
+        title: null,
+        credits: { enabled: false },
         exporting: { enabled: false },
-        title: { text: "" },
         legend: {
           align: "right",
           layout: "vertical",
