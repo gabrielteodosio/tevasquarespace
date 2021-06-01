@@ -6,18 +6,22 @@ const colors = {
 
 const host = "https://storage.googleapis.com/teva-indices-public/";
 
+const identifier = "4.3.4";
+const indiceName = "Índice de Ações Bens de Consumo e Varejo";
+const version = "v0.41";
+
 const csvsUrls = {
   ibovespa: `${host}quotations/Ibovespa.csv`,
-  higherRelevance: `${host}metrics/Ativos com maior relevância/4.3.4 Índice de Ações Bens de Consumo e Varejo v0.4.csv`,
-  quotes: `${host}quotations/4.3.4 Índice de Ações Bens de Consumo e Varejo v0.4.csv`,
-  standardDeviation: `${host}metrics/Desvio padrão/4.3.4 Índice de Ações Bens de Consumo e Varejo v0.4.csv`,
-  sharpeIndex: `${host}metrics/Índice Sharpe/4.3.4 Índice de Ações Bens de Consumo e Varejo v0.4.csv`,
-  anualReturn: `${host}metrics/Retorno anual/4.3.4 Índice de Ações Bens de Consumo e Varejo v0.4.csv`,
-  turnOverLTM: `${host}metrics/Turnover LTM/4.3.4 Índice de Ações Bens de Consumo e Varejo v0.4.csv`,
-  ticksNumber: `${host}metrics/Número de ativos/4.3.4 Índice de Ações Bens de Consumo e Varejo v0.4.csv`,
-  turnover: `${host}metrics/Turnover/4.3.4 Índice de Ações Bens de Consumo e Varejo v0.4.csv`,
-  periodicsReturn: `${host}metrics/Retorno períodos/4.3.4 Índice de Ações Bens de Consumo e Varejo v0.4.csv`,
-  monthlyReturn: `${host}metrics/Retorno mensal/4.3.4 Índice de Ações Bens de Consumo e Varejo v0.4.csv`,
+  higherRelevance: `${host}metrics/Ativos com maior relevância/${identifier} ${indiceName} ${version}.csv`,
+  quotes: `${host}quotations/${identifier} ${indiceName} ${version}.csv`,
+  standardDeviation: `${host}metrics/Desvio padrão/${identifier} ${indiceName} ${version}.csv`,
+  sharpeIndex: `${host}metrics/Índice Sharpe/${identifier} ${indiceName} ${version}.csv`,
+  anualReturn: `${host}metrics/Retorno anual/${identifier} ${indiceName} ${version}.csv`,
+  turnOverLTM: `${host}metrics/Turnover LTM/${identifier} ${indiceName} ${version}.csv`,
+  ticksNumber: `${host}metrics/Número de ativos/${identifier} ${indiceName} ${version}.csv`,
+  turnover: `${host}metrics/Turnover/${identifier} ${indiceName} ${version}.csv`,
+  periodicsReturn: `${host}metrics/Retorno períodos/${identifier} ${indiceName} ${version}.csv`,
+  monthlyReturn: `${host}metrics/Retorno mensal/${identifier} ${indiceName} ${version}.csv`,
 };
 
 const lang = {
@@ -314,7 +318,7 @@ function processQuotes() {
             title: "Máximo de tempo",
           },
         ],
-        
+
       },
     });
   };
@@ -384,7 +388,7 @@ function processQuotes() {
         ];
       }),
     }
-    
+
     this.quotesChart.traces = [traceIbovespa, trace];
     renderChart([trace, traceIbovespa])
   };
@@ -401,7 +405,7 @@ function processQuotes() {
 
     d3.blob(csvsUrls.quotes).then(processQuote);
   };
-  
+
   d3.blob(csvsUrls.ibovespa).then(processIbovespa);
 }
 
@@ -681,9 +685,9 @@ function processMonthlyReturn() {
       }).forEach((data) => {
         const d = data["Mês/ano do retorno"];
         const month = d.slice(0, d.indexOf("/"));
-        
+
         const idx = months.indexOf(month);
-        
+
         dataByMonth[idx] = data["Retorno"] || "-";
       });
 
