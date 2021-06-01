@@ -8,7 +8,7 @@ const host = "https://storage.googleapis.com/teva-indices-public/";
 
 const identifier = "4.1.1";
 const indiceName = "Índice de Ações Amplo";
-const version = "v0.4";
+const version = "v0.41";
 
 const csvsUrls = {
   ibovespa: `${host}quotations/Ibovespa.csv`,
@@ -206,7 +206,7 @@ function processQuotes() {
     const quotesChart = Highcharts.stockChart("quotes-chart", {
       chart: {
         type: "area",
-        margin: [30, 0, 30, 0],
+        margin: [60, 0, 30, 0],
       },
       series: series,
       scrollbar: { enabled: true },
