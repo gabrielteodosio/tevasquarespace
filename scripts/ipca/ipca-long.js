@@ -227,7 +227,7 @@ function processQuotes() {
 
     const latestData = multiSort([...rows], { "Data de referência": "desc" })[0];
 
-    this.quote = latestData["Cotação do índice"];
+    this.quote = latestData["Valor do índice"];
     this.dailyReturn = latestData["Retorno diário"];
 
     const trace = {
