@@ -1300,8 +1300,8 @@ function processPresidentAdmBoard() {
           {
             keys: ["name", "y", "label", "color"],
             data: [
-              ["Homens", 93.73, "Homens", colors.secondary],
-              ["Mulheres", 6.27, "Mulheres", colors.primary],
+              ["Homens", 93.0, "Homens", colors.secondary],
+              ["Mulheres", 7.0, "Mulheres", colors.primary],
             ],
           },
         ],
