@@ -427,6 +427,8 @@ function processCompaniesDistributionNumberWomenBoards() {
         data: filtered[4],
       };
 
+      categories = categories.slice(0, categories.length - 1).concat("Mai-2021");
+
       const lineChart = Highcharts.chart(
         "distribution-number-women-chart3",
         Highcharts.merge(chartOptions, {
@@ -764,6 +766,8 @@ function processGenderNumbersBoards() {
       { homens: [], mulheres: [] }
     );
 
+    categories = categories.slice(0, categories.length - 1).concat("Mai-2021")
+
     const NTraceMen = {
       name: "Homens",
       color: colors.secondary,
@@ -854,6 +858,16 @@ function processGenderNumbersBoards() {
                 " %</b>"
               );
             },
+          },
+          responsive: {
+            rules: [
+              {
+                condition: { maxWidth: 550 },
+                chartOptions: {
+                  legend: { enabled: false },
+                },
+              },
+            ],
           },
         })
       );
@@ -958,6 +972,8 @@ function processGenderNumbersBoards() {
       color: colors.primary,
       data: Object.values(filtered.mulheres[2])[0],
     };
+
+    categories = categories.slice(0, categories.length - 1).concat("Mai-2021")
 
     if (document.getElementById("gender-numbers-chart5")) {
       // Grafico de linha [% homens/mulheres]
@@ -1872,7 +1888,7 @@ function quarterToYear(quarter) {
 // 4 Tri: Dezembro
 function quarterToTrimester(quarter) {
   const arr = ["1Q", "2Q", "3Q", "4Q"];
-  const aux = ["Mar", "Jun", "Set", "Dez"];
+  const aux = ["Mai", "Jun", "Set", "Dez"];
 
   let result = quarterToYear(quarter);
   for (let i = 0; i < arr.length; i++) {
