@@ -608,8 +608,8 @@ function processGenderNumbersBoards() {
               name: "Representatividade",
               keys: ["name", "y", "color", "label"],
               data: [
-                ["Homens", 1822, "rgb(197, 197, 197)", "HOMENS"],
-                ["Mulheres", 265, "#7cb5ec", "MULHERES"],
+                ["Homens", 1855, "rgb(197, 197, 197)", "HOMENS"],
+                ["Mulheres", 301, "#7cb5ec", "MULHERES"],
               ],
               dataLabels: {
                 enabled: false,
