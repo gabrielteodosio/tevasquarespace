@@ -677,8 +677,6 @@ function processGenderNumbersBoards() {
         ]
       );
 
-      console.log({ series, quarter });
-
       // Categorias fixas
       const chart = Highcharts.chart(
         "gender-numbers-stack-chart",
