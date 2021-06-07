@@ -200,7 +200,7 @@ function processCompaniesDistributionNumberWomenBoards() {
       `4Q${todayYear - 3}`, // dez/2018
       `4Q${todayYear - 2}`, // dez/2019
       `4Q${todayYear - 1}`, // dez/2020
-      `1Q${todayYear}`, // dez/2021
+      `Last month`, // dez/2021
     ];
 
     const series = periods.map((period) => parseFloat(data[jsonKey][period]));
@@ -278,15 +278,20 @@ function processCompaniesDistributionNumberWomenBoards() {
     const series = jsonKeys.map((jsonKey) => {
       let y = null;
 
+      if (data[jsonKey].hasOwnProperty("Last month")) {
+        y = parseFloat(data[jsonKey]["Last month"]);
+        return { y, color: y >= 50 ? "rgb(53, 149, 233)" : "#7cb5ec" };
+      }
+
       if (data[jsonKey].hasOwnProperty(periods[1])) {
         y = parseFloat(data[jsonKey][periods[1]]);
+        return { y, color: y >= 50 ? "rgb(53, 149, 233)" : "#7cb5ec" };
       }
 
       if (data[jsonKey].hasOwnProperty(periods[0])) {
         y = parseFloat(data[jsonKey][periods[0]]);
+        return { y, color: y >= 50 ? "rgb(53, 149, 233)" : "#7cb5ec" };
       }
-
-      return { y, color: y >= 50 ? "rgb(53, 149, 233)" : "#7cb5ec" };
     });
 
     const chartOptions = {
@@ -427,7 +432,9 @@ function processCompaniesDistributionNumberWomenBoards() {
         data: filtered[4],
       };
 
-      categories = categories.slice(0, categories.length - 1).concat("Mai-2021");
+      categories = categories
+        .slice(0, categories.length - 1)
+        .concat("Mai-2021");
 
       const lineChart = Highcharts.chart(
         "distribution-number-women-chart3",
@@ -468,8 +475,9 @@ function processCompaniesDistributionNumberWomenBoards() {
     renderChart3(data);
   };
 
-  d3.blob(jsonUrls.companies_distribution_number_women_boards)
-    .then(processBlob);
+  d3.blob(jsonUrls.companies_distribution_number_women_boards).then(
+    processBlob
+  );
 }
 
 function processCompaniesWithMoreThan2WomenRegion() {
@@ -634,7 +642,11 @@ function processGenderNumbersBoards() {
       const suffix = suffixes[i % suffixes.length];
 
       const jsonKey = `${prefix} ${suffix}`;
-      let key = `${quarter}${new Date().getFullYear()}`;
+      let key = "Last month";
+
+      if (!data[jsonKey].hasOwnProperty(key)) {
+        key = `${quarter}${new Date().getFullYear()}`;
+      }
 
       if (!data[jsonKey].hasOwnProperty(key)) {
         key = `${quarter}${new Date().getFullYear() - 1}`;
@@ -664,6 +676,8 @@ function processGenderNumbersBoards() {
           { name: "Homens", data: [] },
         ]
       );
+
+      console.log({ series, quarter });
 
       // Categorias fixas
       const chart = Highcharts.chart(
@@ -766,7 +780,7 @@ function processGenderNumbersBoards() {
       { homens: [], mulheres: [] }
     );
 
-    categories = categories.slice(0, categories.length - 1).concat("Mai-2021")
+    categories = categories.slice(0, categories.length - 1).concat("Mai-2021");
 
     const NTraceMen = {
       name: "Homens",
@@ -806,7 +820,7 @@ function processGenderNumbersBoards() {
           xAxis: {
             categories,
             labels: {
-              rotation: -90
+              rotation: -90,
             },
           },
           yAxis: {
@@ -973,7 +987,7 @@ function processGenderNumbersBoards() {
       data: Object.values(filtered.mulheres[2])[0],
     };
 
-    categories = categories.slice(0, categories.length - 1).concat("Mai-2021")
+    categories = categories.slice(0, categories.length - 1).concat("Mai-2021");
 
     if (document.getElementById("gender-numbers-chart5")) {
       // Grafico de linha [% homens/mulheres]
@@ -988,7 +1002,7 @@ function processGenderNumbersBoards() {
           xAxis: {
             categories,
             labels: {
-              rotation: -90
+              rotation: -90,
             },
           },
           yAxis: {
@@ -1029,7 +1043,7 @@ function processGenderNumbersBoards() {
           xAxis: {
             categories,
             labels: {
-              rotation: -90
+              rotation: -90,
             },
           },
           yAxis: {
@@ -1070,7 +1084,7 @@ function processGenderNumbersBoards() {
           xAxis: {
             categories,
             labels: {
-              rotation: -90
+              rotation: -90,
             },
           },
           yAxis: {
@@ -1111,7 +1125,7 @@ function processGenderNumbersBoards() {
           xAxis: {
             categories,
             labels: {
-              rotation: -90
+              rotation: -90,
             },
           },
           yAxis: {
@@ -1293,11 +1307,13 @@ function processPresidentAdmBoard() {
         ],
       })
     );
-  }
+  };
 
   const renderChart2 = (data) => {
-    const menKey = "% de homens nos conselhos de administracao eleitos pelos controladores";
-    const womenKey = "% de mulheres nos conselhos de administracao eleitas pelos controladores";
+    const menKey =
+      "% de homens nos conselhos de administracao eleitos pelos controladores";
+    const womenKey =
+      "% de mulheres nos conselhos de administracao eleitas pelos controladores";
 
     const keys = Object.keys(data[womenKey]);
 
@@ -1370,11 +1386,13 @@ function processPresidentAdmBoard() {
         },
       })
     );
-  }
+  };
 
   const renderChart3 = (data) => {
-    const menKey = "% de homens presidentes de conselhos de administracao eleitos pelos controladores";
-    const womenKey = "% de mulheres presidentes de conselhos de administracao eleitas pelos controladores";
+    const menKey =
+      "% de homens presidentes de conselhos de administracao eleitos pelos controladores";
+    const womenKey =
+      "% de mulheres presidentes de conselhos de administracao eleitas pelos controladores";
 
     const keys = Object.keys(data[womenKey]);
 
@@ -1439,22 +1457,24 @@ function processPresidentAdmBoard() {
             style: { color: "white" },
           },
         },
-        series: [{
-          keys: ["name", "y", "label", "color"],
-          data: categories.map((category, idx) => {
-            if (idx === 0) {
-            return ["Homens", ...menAge, "Homens", colors.secondary]
-            }
+        series: [
+          {
+            keys: ["name", "y", "label", "color"],
+            data: categories.map((category, idx) => {
+              if (idx === 0) {
+                return ["Homens", ...menAge, "Homens", colors.secondary];
+              }
 
-            return ["Mulheres", ...womenAge, "Mulheres", colors.primary]
-          }),
-        },],
+              return ["Mulheres", ...womenAge, "Mulheres", colors.primary];
+            }),
+          },
+        ],
         plotOptions: {
           series: { borderWidth: 0 },
         },
       })
     );
-  }
+  };
 
   const processBlob = async (blob) => {
     const text = await blob.text();
@@ -1624,7 +1644,7 @@ function processAgeDistributionAdmBoard() {
         },
       })
     );
-  }
+  };
 
   const processBlob = async (blob) => {
     const text = await blob.text();
@@ -1717,7 +1737,7 @@ function processAdmBoardMandates() {
         },
       })
     );
-  }
+  };
 
   const renderChart2 = (data) => {
     const menKey = "N medio de mandatos dos homens";
@@ -1794,7 +1814,7 @@ function processAdmBoardMandates() {
         },
       })
     );
-  }
+  };
 
   const processBlob = async (blob) => {
     const text = await blob.text();
@@ -1888,7 +1908,29 @@ function quarterToYear(quarter) {
 // 4 Tri: Dezembro
 function quarterToTrimester(quarter) {
   const arr = ["1Q", "2Q", "3Q", "4Q"];
-  const aux = ["Mai", "Jun", "Set", "Dez"];
+  const aux = ["Mar", "Jun", "Set", "Dez"];
+
+  if (quarter == "Last month") {
+    const today = new Date();
+
+    const shortMonths = [
+      "Jan",
+      "Fev",
+      "Mar",
+      "Abr",
+      "Mai",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Set",
+      "Out",
+      "Nov",
+      "Dez",
+    ];
+
+    // return `${shortMonths[today.getMonth()]}-${today.getFullYear()}`
+    return "Mai-2021";
+  }
 
   let result = quarterToYear(quarter);
   for (let i = 0; i < arr.length; i++) {
