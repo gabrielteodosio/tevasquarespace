@@ -1767,7 +1767,7 @@ function processAdmBoardMandates() {
           return (
             this.series.name +
             ": <strong>" +
-            numberToDecimalsDigits(this.y, 0) +
+            numberToDecimalsDigits(this.y, 1) +
             "</strong>"
           );
         },
